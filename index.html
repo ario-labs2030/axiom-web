@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axiom — Reframe</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --white:#FFFFFF;
+  --off:#F9F9F7;
+  --ink:#0A0A08;
+  --ink2:#1A1A16;
+  --ink3:#2E2E28;
+  --mid:#6B6B60;
+  --faint:#CACAC0;
+  --rule:#E8E8E2;
+  --accent:#E8441A;
+  --accent2:#FF5C32;
+  --accent-bg:rgba(232,68,26,0.06);
+  --serif:'Instrument Serif',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--white);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.6;
+  min-height:100vh;
+}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--faint)}
+
+/* ── NAV ── */
+nav{
+  padding:20px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--rule);
+  position:sticky;top:0;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(8px);
+  z-index:100;
+}
+
+.nav-logo{
+  font-family:var(--serif);
+  font-size:20px;
+  color:var(--ink);
+  letter-spacing:0.02em;
+  text-decoration:none;
+}
+
+.nav-tool{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--mid);
+  display:flex;align-items:center;gap:8px;
+}
+
+.nav-tool-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+}
+
+/* ── HERO ── */
+.hero{
+  padding:80px 48px 60px;
+  max-width:760px;
+  margin:0 auto;
+}
+
+.hero-eyebrow{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:10px;
+}
+
+.hero-eyebrow::before{
+  content:'';
+  display:block;
+  width:24px;height:1px;
+  background:var(--accent);
+}
+
+.hero-headline{
+  font-family:var(--serif);
+  font-size:clamp(42px,6vw,72px);
+  line-height:1.0;
+  color:var(--ink);
+  font-weight:400;
+  margin-bottom:20px;
+  letter-spacing:-0.02em;
+}
+
+.hero-headline em{
+  font-style:italic;
+  color:var(--accent);
+}
+
+.hero-sub{
+  font-size:16px;
+  color:var(--mid);
+  line-height:1.6;
+  max-width:520px;
+  margin-bottom:8px;
+}
+
+.hero-one-liner{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:17px;
+  color:var(--ink3);
+  margin-top:16px;
+  padding-left:16px;
+  border-left:2px solid var(--rule);
+}
+
+/* ── INPUT SECTION ── */
+.input-section{
+  max-width:760px;
+  margin:0 auto;
+  padding:0 48px 48px;
+}
+
+/* Prompt triggers */
+.prompt-triggers{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:24px;
+}
+
+.trigger{
+  padding:7px 14px;
+  border:1px solid var(--rule);
+  background:transparent;
+  font-family:var(--sans);
+  font-size:12px;
+  color:var(--mid);
+  cursor:pointer;
+  border-radius:2px;
+  transition:all 0.15s;
+  text-align:left;
+}
+
+.trigger:hover{
+  border-color:var(--ink);
+  color:var(--ink);
+  background:var(--off);
+}
+
+.trigger.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-bg);
+}
+
+/* Main input */
+.input-wrap{
+  position:relative;
+  margin-bottom:16px;
+}
+
+.take-input{
+  width:100%;
+  min-height:140px;
+  padding:20px 24px;
+  border:1.5px solid var(--rule);
+  border-radius:0;
+  background:var(--off);
+  font-family:var(--serif);
+  font-size:18px;
+  line-height:1.6;
+  color:var(--ink);
+  resize:none;
+  transition:border-color 0.15s,background 0.15s;
+  outline:none;
+}
+
+.take-input::placeholder{
+  color:var(--faint);
+  font-style:italic;
+}
+
+.take-input:focus{
+  border-color:var(--ink);
+  background:var(--white);
+}
+
+.char-count{
+  position:absolute;
+  bottom:10px;right:14px;
+  font-family:var(--mono);
+  font-size:9px;
+  color:var(--faint);
+  pointer-events:none;
+}
+
+/* Optional fields */
+.optional-toggle{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--mid);
+  cursor:pointer;
+  margin-bottom:16px;
+  background:none;border:none;padding:0;
+  transition:color 0.12s;
+}
+
+.optional-toggle:hover{color:var(--ink)}
+
+.toggle-chevron{
+  transition:transform 0.2s;
+  font-size:10px;
+}
+
+.toggle-chevron.open{transform:rotate(180deg)}
+
+.optional-fields{
+  display:none;
+  gap:12px;
+  margin-bottom:16px;
+  animation:fadeDown 0.2s ease;
+}
+
+.optional-fields.open{display:flex;flex-direction:column}
+
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.opt-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--mid);
+  margin-bottom:5px;
+  display:block;
+}
+
+.opt-input{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid var(--rule);
+  background:var(--off);
+  font-family:var(--sans);
+  font-size:13px;
+  color:var(--ink);
+  outline:none;
+  border-radius:0;
+  transition:border-color 0.15s;
+}
+
+.opt-input:focus{border-color:var(--ink);background:var(--white)}
+.opt-input::placeholder{color:var(--faint)}
+
+.confidence-opts{
+  display:flex;gap:8px;
+}
+
+.conf-opt{
+  flex:1;padding:9px 0;
+  border:1px solid var(--rule);
+  background:transparent;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.06em;
+  color:var(--mid);
+  cursor:pointer;
+  text-align:center;
+  transition:all 0.15s;
+  border-radius:0;
+}
+
+.conf-opt:hover{border-color:var(--ink);color:var(--ink)}
+.conf-opt.selected{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* Submit row */
+.submit-row{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.submit-btn{
+  padding:14px 32px;
+  background:var(--ink);
+  color:var(--white);
+  border:none;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.15s;
+  display:flex;align-items:center;gap:10px;
+  border-radius:0;
+}
+
+.submit-btn:hover{background:var(--accent)}
+.submit-btn:disabled{background:var(--faint);cursor:not-allowed}
+
+.submit-arrow{
+  transition:transform 0.15s;
+}
+
+.submit-btn:hover .submit-arrow{transform:translateX(4px)}
+
+.submit-hint{
+  font-family:var(--mono);
+  font-size:9px;
+  color:var(--faint);
+  letter-spacing:0.04em;
+}
+
+/* ── THINKING STATE ── */
+.thinking-state{
+  display:none;
+  max-width:760px;
+  margin:0 auto;
+  padding:0 48px 48px;
+}
+
+.thinking-state.active{display:block}
+
+.thinking-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--mid);
+  margin-bottom:32px;
+  display:flex;align-items:center;gap:10px;
+}
+
+.thinking-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:thinkPulse 0.8s ease infinite;
+}
+
+@keyframes thinkPulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.3;transform:scale(0.7)}
+}
+
+.thinking-lines{
+  display:flex;flex-direction:column;gap:0;
+}
+
+.think-line{
+  font-family:var(--serif);
+  font-size:22px;
+  font-style:italic;
+  color:var(--faint);
+  padding:14px 0;
+  border-bottom:1px solid var(--rule);
+  opacity:0;
+  transform:translateX(-8px);
+  transition:all 0.4s ease;
+  display:flex;align-items:center;gap:14px;
+}
+
+.think-line.visible{
+  opacity:1;
+  transform:translateX(0);
+}
+
+.think-line.active{color:var(--ink)}
+
+.think-line-num{
+  font-family:var(--mono);
+  font-size:9px;
+  color:var(--faint);
+  letter-spacing:0.06em;
+  flex-shrink:0;
+  width:20px;
+}
+
+.think-line.active .think-line-num{color:var(--accent)}
+
+/* ── RESULTS ── */
+.results-section{
+  display:none;
+  max-width:760px;
+  margin:0 auto;
+  padding:0 48px 80px;
+}
+
+.results-section.active{display:block}
+
+/* Original take echo */
+.take-echo{
+  padding:28px 0 32px;
+  border-bottom:2px solid var(--ink);
+  margin-bottom:48px;
+  opacity:0;
+  animation:fadeUp 0.5s ease forwards;
+}
+
+.take-echo-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--mid);
+  margin-bottom:12px;
+}
+
+.take-echo-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:22px;
+  line-height:1.35;
+  color:var(--ink);
+}
+
+/* Result blocks */
+.result-block{
+  padding:36px 0;
+  border-bottom:1px solid var(--rule);
+  opacity:0;
+  transform:translateY(16px);
+}
+
+.result-block.streamed{
+  animation:fadeUp 0.5s ease forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.block-header{
+  display:flex;align-items:flex-start;gap:16px;
+  margin-bottom:16px;
+}
+
+.block-num{
+  font-family:var(--mono);
+  font-size:9px;
+  color:var(--faint);
+  letter-spacing:0.06em;
+  flex-shrink:0;
+  padding-top:3px;
+}
+
+.block-title{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--mid);
+}
+
+.block-content{
+  font-size:15px;
+  line-height:1.75;
+  color:var(--ink3);
+  padding-left:30px;
+}
+
+.block-content p+p{margin-top:12px}
+
+/* Block 2 — Blind Spot: THE centrepiece */
+.result-block.blind-spot{
+  padding:48px 0;
+  background:transparent;
+}
+
+.blind-spot-statement{
+  font-family:var(--serif);
+  font-size:clamp(22px,3.5vw,32px);
+  line-height:1.2;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+  margin:20px 0 8px;
+  padding-left:30px;
+}
+
+.blind-spot-statement em{
+  font-style:italic;
+  color:var(--accent);
+}
+
+/* Block 3 — Counter: left accent */
+.result-block.counter .block-content{
+  border-left:3px solid var(--ink);
+  padding-left:24px;
+  margin-left:30px;
+}
+
+/* Block 5 — Reframe: full accent background */
+.result-block.reframe{
+  background:var(--ink);
+  padding:40px 36px;
+  margin:0 -48px;
+  border-bottom:none;
+}
+
+.reframe .block-num{color:rgba(255,255,255,0.25)}
+.reframe .block-title{color:rgba(255,255,255,0.45)}
+.reframe .block-content{color:rgba(255,255,255,0.88);padding-left:0;font-size:16px;line-height:1.7}
+
+/* Block 6 — Score */
+.result-block.score-block{
+  padding:48px 0;
+  border-bottom:none;
+}
+
+.score-display{
+  padding-left:30px;
+}
+
+.score-num{
+  font-family:var(--serif);
+  font-size:88px;
+  line-height:1;
+  color:var(--ink);
+  letter-spacing:-0.04em;
+  margin-bottom:4px;
+}
+
+.score-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--mid);
+  margin-bottom:20px;
+}
+
+.score-bar-track{
+  width:100%;
+  max-width:400px;
+  height:3px;
+  background:var(--rule);
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+}
+
+.score-bar-fill{
+  height:100%;
+  background:var(--accent);
+  width:0;
+  transition:width 1.2s cubic-bezier(.22,.68,0,1.2);
+}
+
+.score-elevate{
+  font-size:13px;
+  color:var(--mid);
+  line-height:1.6;
+  max-width:460px;
+  padding:12px 16px;
+  border-left:2px solid var(--rule);
+  margin-top:4px;
+}
+
+/* Steal This Argument */
+.steal-block{
+  margin-top:48px;
+  padding:28px 32px;
+  background:var(--ink);
+  border:none;
+  opacity:0;
+  position:relative;
+}
+
+.steal-block.streamed{
+  animation:fadeUp 0.5s ease forwards;
+}
+
+.steal-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+  margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+.steal-label-left{
+  display:flex;align-items:center;gap:8px;
+}
+
+.steal-label-left::before{
+  content:'';
+  display:block;
+  width:16px;height:1px;
+  background:rgba(255,255,255,0.3);
+}
+
+.steal-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:20px;
+  line-height:1.5;
+  color:#F9F9F7;
+  margin-bottom:22px;
+  max-width:540px;
+}
+
+.steal-char-count{
+  font-family:var(--mono);
+  font-size:9px;
+  color:rgba(255,255,255,0.25);
+  margin-bottom:18px;
+}
+
+.steal-actions{
+  display:flex;align-items:center;gap:10px;
+}
+
+.x-share-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 20px;
+  background:#fff;
+  color:#0A0A08;
+  border:none;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:opacity 0.15s;
+  text-decoration:none;
+  border-radius:2px;
+}
+
+.x-share-btn:hover{opacity:0.88}
+
+.x-logo{
+  width:13px;height:13px;
+  display:inline-block;
+  flex-shrink:0;
+}
+
+.steal-copy-btn{
+  padding:10px 18px;
+  background:transparent;
+  color:rgba(255,255,255,0.5);
+  border:1px solid rgba(255,255,255,0.15);
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.15s;
+  border-radius:2px;
+}
+
+.steal-copy-btn:hover{color:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.35)}
+
+/* Actions */
+.result-actions{
+  display:flex;gap:12px;
+  flex-wrap:wrap;
+  margin-top:48px;
+  padding-top:32px;
+  border-top:1px solid var(--rule);
+  opacity:0;
+}
+
+.result-actions.streamed{
+  animation:fadeUp 0.5s ease 0.2s forwards;
+}
+
+.action-btn{
+  padding:11px 22px;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.15s;
+  border-radius:0;
+}
+
+.action-primary{
+  background:var(--ink);
+  color:var(--white);
+  border:1.5px solid var(--ink);
+}
+.action-primary:hover{background:var(--accent);border-color:var(--accent)}
+
+.action-secondary{
+  background:transparent;
+  color:var(--ink);
+  border:1.5px solid var(--rule);
+}
+.action-secondary:hover{border-color:var(--ink)}
+
+/* Share card modal */
+.share-modal{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(10,10,8,0.7);
+  z-index:500;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+
+.share-modal.open{display:flex}
+
+.share-card{
+  background:var(--ink);
+  width:440px;
+  max-width:90vw;
+  padding:40px;
+  position:relative;
+  animation:fadeUp 0.3s ease;
+}
+
+.share-close{
+  position:absolute;top:16px;right:20px;
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(255,255,255,0.4);
+  cursor:pointer;background:none;border:none;
+  transition:color 0.12s;
+}
+.share-close:hover{color:rgba(255,255,255,0.8)}
+
+.share-take{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:15px;
+  color:rgba(255,255,255,0.6);
+  line-height:1.5;
+  margin-bottom:24px;
+  padding-bottom:24px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.share-assumption{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:8px;
+}
+
+.share-assumption-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:18px;
+  color:var(--white);
+  line-height:1.35;
+  margin-bottom:24px;
+}
+
+.share-score-row{
+  display:flex;align-items:baseline;gap:12px;
+  padding:20px 0;
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  margin-bottom:20px;
+}
+
+.share-score-num{
+  font-family:var(--serif);
+  font-size:52px;
+  color:var(--white);
+  line-height:1;
+  letter-spacing:-0.03em;
+}
+
+.share-score-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.4);
+}
+
+.share-attribution{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  color:rgba(255,255,255,0.3);
+}
+
+.share-attribution span{color:var(--accent2)}
+
+.share-actions{
+  display:flex;gap:8px;margin-top:20px;
+}
+
+.share-copy-btn{
+  flex:1;padding:10px;
+  background:var(--accent);
+  color:var(--white);
+  border:none;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:opacity 0.15s;
+}
+.share-copy-btn:hover{opacity:0.85}
+
+/* Streaming cursor */
+.stream-cursor{
+  display:inline-block;
+  width:2px;height:1em;
+  background:var(--accent);
+  margin-left:2px;
+  vertical-align:text-bottom;
+  animation:cursorBlink 0.7s step-end infinite;
+}
+
+@keyframes cursorBlink{
+  0%,100%{opacity:1}50%{opacity:0}
+}
+
+/* Divider line */
+.section-divider{
+  max-width:760px;
+  margin:0 auto;
+  padding:0 48px;
+}
+
+.section-divider hr{
+  border:none;
+  border-top:1px solid var(--rule);
+  margin:0;
+}
+
+/* ── WHERE THIS LEADS ── */
+.leads-section{
+  display:none;
+  max-width:760px;
+  margin:0 auto;
+  padding:0 48px 80px;
+  opacity:0;
+  animation:fadeUp 0.6s ease 0.2s forwards;
+}
+
+.leads-section.active{display:block}
+
+.leads-divider{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:40px;
+  padding-top:48px;
+  border-top:2px solid var(--ink);
+}
+
+.leads-title{
+  font-family:var(--serif);
+  font-size:32px;
+  font-weight:400;
+  color:var(--ink);
+  white-space:nowrap;
+}
+
+.leads-subtitle{
+  font-family:var(--sans);
+  font-size:13px;
+  color:var(--mid);
+  line-height:1.6;
+  max-width:380px;
+  margin-bottom:32px;
+}
+
+.leads-subtitle em{
+  font-style:italic;
+  color:var(--ink3);
+}
+
+.pick-one{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:32px;
+  padding:6px 12px;
+  border:1px solid rgba(232,68,26,0.2);
+  background:var(--accent-bg);
+}
+
+/* Lens grid — 2×3 */
+.lens-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:48px;
+}
+
+.lens-card{
+  border-radius:8px;
+  overflow:hidden;
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+  opacity:0;
+  transform:translateY(12px);
+  transition:transform 0.2s cubic-bezier(.22,.68,0,1.2),box-shadow 0.2s;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  box-shadow:0 2px 12px rgba(10,10,8,0.08);
+}
+
+.lens-card.revealed{
+  animation:fadeUp 0.45s ease forwards;
+}
+
+.lens-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(10,10,8,0.16);
+}
+
+.lens-card:hover .lens-arrow-icon{opacity:1;transform:translate(3px,-3px)}
+
+/* Thumbnail top half */
+.lens-thumb{
+  height:110px;
+  position:relative;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+.lens-thumb-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:0.45;
+  filter:saturate(0.8);
+  transition:transform 0.4s ease,opacity 0.3s;
+}
+
+.lens-card:hover .lens-thumb-img{transform:scale(1.04);opacity:0.55}
+
+.lens-thumb-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%);
+}
+
+/* Source logo in thumb */
+.lens-source-logo{
+  position:absolute;
+  top:10px;left:10px;
+  width:28px;height:28px;
+  border-radius:6px;
+  background:white;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.lens-source-logo img{
+  width:20px;height:20px;
+  object-fit:contain;
+}
+
+.lens-source-logo-fallback{
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:700;
+  color:var(--ink);
+}
+
+/* Format badge in thumb */
+.lens-format-badge{
+  position:absolute;
+  top:10px;right:10px;
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:3px 7px;
+  border-radius:2px;
+  background:rgba(0,0,0,0.5);
+  color:rgba(255,255,255,0.85);
+}
+
+/* Arrow in thumb */
+.lens-arrow-icon{
+  position:absolute;
+  bottom:10px;right:12px;
+  font-size:13px;
+  color:white;
+  opacity:0;
+  transition:all 0.2s;
+}
+
+/* Step label inside thumb */
+.lens-step-label{
+  position:absolute;
+  bottom:10px;left:10px;
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
+}
+
+/* Card body — coloured background */
+.lens-body{
+  padding:14px 16px 16px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.lens-type-label{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  font-weight:500;
+  opacity:0.8;
+}
+
+.lens-anchor{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:0.04em;
+  opacity:0.55;
+  font-style:italic;
+}
+
+.lens-title{
+  font-family:var(--serif);
+  font-size:15px;
+  line-height:1.25;
+  font-weight:500;
+  flex:1;
+}
+
+.lens-source-line{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:0.04em;
+  opacity:0.55;
+}
+
+.lens-why{
+  font-size:11px;
+  line-height:1.55;
+  opacity:0.75;
+  margin-top:2px;
+}
+
+.lens-tag-pill{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:2px 7px;
+  border-radius:2px;
+  background:rgba(255,255,255,0.18);
+  color:inherit;
+  margin-top:4px;
+  align-self:flex-start;
+}
+
+/* Card colour themes */
+.lens-card.theme-0 .lens-body{background:#1B3F6B;color:white}
+.lens-card.theme-0 .lens-thumb{background:#1B3F6B}
+.lens-card.theme-1 .lens-body{background:#0D9488;color:white}
+.lens-card.theme-1 .lens-thumb{background:#0D9488}
+.lens-card.theme-2 .lens-body{background:#C24B2A;color:white}
+.lens-card.theme-2 .lens-thumb{background:#C24B2A}
+.lens-card.theme-3 .lens-body{background:#5C3A8C;color:white}
+.lens-card.theme-3 .lens-thumb{background:#5C3A8C}
+.lens-card.theme-4 .lens-body{background:#1C1917;color:white}
+.lens-card.theme-4 .lens-thumb{background:#1C1917}
+.lens-card.theme-5 .lens-body{background:#B8520A;color:white}
+.lens-card.theme-5 .lens-thumb{background:#B8520A}
+
+/* Sit with this */
+.sit-block{
+  margin-top:48px;
+  padding:32px 0;
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  opacity:0;
+}
+
+.sit-block.revealed{animation:fadeUp 0.5s ease forwards}
+
+.sit-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--mid);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+
+.sit-label::before{
+  content:'';
+  display:block;width:20px;height:1px;
+  background:var(--mid);
+}
+
+.sit-prompt{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:22px;
+  line-height:1.35;
+  color:var(--ink);
+  max-width:520px;
+}
+
+/* Closing line */
+.closing-line{
+  margin-top:40px;
+  padding:24px 0 0;
+  opacity:0;
+}
+
+.closing-line.revealed{animation:fadeUp 0.5s ease forwards}
+
+.closing-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:16px;
+  color:var(--mid);
+  line-height:1.6;
+}
+
+.closing-axiom{
+  display:inline-block;
+  margin-top:12px;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--faint);
+}
+
+/* Community slot — placeholder for v2 */
+.community-slot{
+  margin-top:32px;
+  padding:20px 24px;
+  border:1px dashed var(--rule);
+  opacity:0.4;
+}
+
+.community-slot-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--faint);
+}
+
+/* ── RESPONSIVE — mobile first ── */
+
+/* Base: all padding uses a fluid variable */
+:root{
+  --px:clamp(16px, 5vw, 48px);
+  --hero-pt:clamp(40px, 8vw, 80px);
+}
+
+/* Nav */
+nav{padding:16px var(--px)}
+
+/* Hero + all sections use fluid padding */
+.hero{padding:var(--hero-pt) var(--px) 48px}
+.input-section{padding:0 var(--px) 48px}
+.thinking-state{padding:0 var(--px) 48px}
+.results-section{padding:0 var(--px) 80px}
+.leads-section{padding:0 var(--px) 80px}
+.section-divider{padding:0 var(--px)}
+
+/* Hero headline scales with viewport */
+.hero-headline{font-size:clamp(36px,8vw,72px)}
+.hero-sub{font-size:clamp(14px,2vw,16px)}
+
+/* Reframe block edge-to-edge on any screen */
+.result-block.reframe{
+  margin:0 calc(-1 * var(--px));
+  padding:40px var(--px);
+}
+
+/* Score scales down on small screens */
+.score-num{font-size:clamp(52px,15vw,88px)}
+
+/* Blind spot statement scales */
+.blind-spot-statement{font-size:clamp(18px,4vw,32px)}
+
+/* Confidence options stack on very small screens */
+@media(max-width:380px){
+  .confidence-opts{flex-direction:column}
+  .conf-opt{flex:none}
+}
+
+/* Tablet and below (max 768px) */
+@media(max-width:768px){
+  /* Lens grid: single column on tablet */
+  .lens-grid{grid-template-columns:1fr}
+
+  /* Submit row stacks */
+  .submit-row{flex-direction:column;align-items:flex-start;gap:10px}
+
+  /* Steal actions stack */
+  .steal-actions{flex-wrap:wrap}
+
+  /* Result actions stack */
+  .result-actions{flex-direction:column}
+  .result-actions .action-btn{width:100%;text-align:center;justify-content:center}
+  .action-btn{display:flex;align-items:center;justify-content:center}
+
+  /* Share card full width */
+  .share-card{width:92vw;padding:28px 20px}
+
+  /* Leads title smaller */
+  .leads-title{font-size:clamp(20px,5vw,32px)}
+
+  /* Sit prompt scales */
+  .sit-prompt{font-size:clamp(17px,4vw,22px)}
+}
+
+/* Phone (max 480px) */
+@media(max-width:480px){
+  /* Nav tighter */
+  .nav-tool-text{display:none}
+
+  /* Hero eyebrow smaller */
+  .hero-eyebrow{font-size:8px}
+
+  /* Trigger pills wrap naturally — already flex-wrap */
+  .prompt-triggers{gap:6px}
+  .trigger{font-size:11px;padding:6px 10px}
+
+  /* Input font smaller on phone */
+  .take-input{font-size:16px;padding:16px}
+
+  /* Optional fields full width */
+  .opt-input{font-size:14px}
+
+  /* Think lines smaller */
+  .think-line{font-size:18px}
+
+  /* Block headers */
+  .block-title{font-size:9px}
+
+  /* Take echo */
+  .take-echo-text{font-size:18px}
+
+  /* Steal text */
+  .steal-text{font-size:16px}
+
+  /* Share card */
+  .share-card{padding:24px 16px}
+  .share-assumption-text{font-size:15px}
+  .share-score-num{font-size:40px}
+
+  /* X share button full width on phone */
+  .x-share-btn{flex:1;justify-content:center}
+  .steal-copy-btn{flex:1;text-align:center}
+
+  /* Lens card thumbnail shorter on phone */
+  .lens-thumb{height:80px}
+
+  /* Closing line */
+  .closing-text{font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Axiom</a>
+  <div class="nav-tool">
+    <div class="nav-tool-dot"></div>
+    Reframe
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Axiom — Reframe</div>
+  <h1 class="hero-headline"><em>Reframe</em><br>your thinking.</h1>
+  <p class="hero-sub">Most people have opinions. Very few have arguments. State any view you hold — and Axiom will return it sharper, more honest, and harder to dismiss.</p>
+  <p class="hero-one-liner">"Before you post it, say it, or defend it — Reframe it."</p>
+</div>
+
+<!-- INPUT -->
+<div class="input-section" id="inputSection">
+
+  <!-- Prompt triggers -->
+  <div class="prompt-triggers">
+    <button class="trigger" onclick="setTrigger(this,'A view you\'d defend at dinner')">A view you'd defend at dinner</button>
+    <button class="trigger" onclick="setTrigger(this,'Something most people get wrong')">Something most people get wrong</button>
+    <button class="trigger" onclick="setTrigger(this,'An opinion you formed quickly')">An opinion you formed quickly</button>
+    <button class="trigger" onclick="setTrigger(this,'A position you know has holes')">A position you know has holes</button>
+  </div>
+
+  <!-- Main input -->
+  <div class="input-wrap">
+    <textarea
+      class="take-input"
+      id="takeInput"
+      placeholder="State your position. One sentence or ten — just say what you actually think."
+      oninput="updateChar()"
+      maxlength="1200"
+    ></textarea>
+    <span class="char-count" id="charCount">0 / 1200</span>
+  </div>
+
+  <!-- Optional fields toggle -->
+  <button class="optional-toggle" onclick="toggleOptional(this)">
+    <span class="toggle-chevron" id="toggleChevron">▾</span>
+    Sharpen the result — add context
+  </button>
+
+  <div class="optional-fields" id="optionalFields">
+    <div>
+      <span class="opt-label">Your context</span>
+      <input type="text" class="opt-input" id="contextInput" placeholder="Who are you relative to this topic? What shaped this view?">
+    </div>
+    <div>
+      <span class="opt-label">Confidence level</span>
+      <div class="confidence-opts">
+        <button class="conf-opt" onclick="setConf(this,'Strongly held')">Strongly held</button>
+        <button class="conf-opt" onclick="setConf(this,'Fairly sure')">Fairly sure</button>
+        <button class="conf-opt" onclick="setConf(this,'Still forming')">Still forming</button>
+      </div>
+    </div>
+    <div>
+      <span class="opt-label">Source or trigger</span>
+      <input type="text" class="opt-input" id="sourceInput" placeholder="Article, conversation, or experience that prompted this?">
+    </div>
+  </div>
+
+  <!-- Notice area — refusals and errors render here -->
+  <div id="inputNotice"></div>
+
+  <!-- Submit -->
+  <div class="submit-row">
+    <button class="submit-btn" id="submitBtn" onclick="runStressTest()">
+      Reframe this →
+      <span class="submit-arrow">→</span>
+    </button>
+    <span class="submit-hint">Takes 10–15 seconds · No account needed</span>
+  </div>
+
+</div>
+
+<div class="section-divider"><hr></div>
+
+<!-- THINKING STATE -->
+<div class="thinking-state" id="thinkingState">
+  <div class="thinking-label">
+    <div class="thinking-dot"></div>
+    Working through your take
+  </div>
+  <div class="thinking-lines" id="thinkingLines">
+    <div class="think-line" data-delay="0">
+      <span class="think-line-num">—</span>
+      Reading your take carefully...
+    </div>
+    <div class="think-line" data-delay="600">
+      <span class="think-line-num">—</span>
+      Figuring out what you're actually claiming...
+    </div>
+    <div class="think-line" data-delay="1400">
+      <span class="think-line-num">—</span>
+      Finding what you're implicitly assuming...
+    </div>
+    <div class="think-line" data-delay="2400">
+      <span class="think-line-num">—</span>
+      Finding the smartest person who'd disagree with you...
+    </div>
+    <div class="think-line" data-delay="3600">
+      <span class="think-line-num">—</span>
+      Mapping who benefits from this view...
+    </div>
+    <div class="think-line" data-delay="4800">
+      <span class="think-line-num">—</span>
+      Tightening the argument...
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" id="resultsSection">
+
+  <!-- Echo of original take -->
+  <div class="take-echo" id="takeEcho">
+    <div class="take-echo-label">Your take</div>
+    <div class="take-echo-text" id="takeEchoText"></div>
+  </div>
+
+  <!-- Block 1: Situate -->
+  <div class="result-block" id="block1">
+    <div class="block-header">
+      <span class="block-num">01</span>
+      <span class="block-title">Let me situate this</span>
+    </div>
+    <div class="block-content" id="block1Content"></div>
+  </div>
+
+  <!-- Block 2: Blind Spot — THE CENTREPIECE -->
+  <div class="result-block blind-spot" id="block2">
+    <div class="block-header">
+      <span class="block-num">02</span>
+      <span class="block-title">Here's what you're implicitly assuming</span>
+    </div>
+    <div class="blind-spot-statement" id="block2Statement"></div>
+    <div class="block-content" id="block2Content" style="margin-top:16px"></div>
+  </div>
+
+  <!-- Block 3: Counter -->
+  <div class="result-block counter" id="block3">
+    <div class="block-header">
+      <span class="block-num">03</span>
+      <span class="block-title">The smartest person who disagrees with you would say this</span>
+    </div>
+    <div class="block-content" id="block3Content"></div>
+  </div>
+
+  <!-- Block 4: Who benefits -->
+  <div class="result-block" id="block4">
+    <div class="block-header">
+      <span class="block-num">04</span>
+      <span class="block-title">What's actually going on beneath this debate</span>
+    </div>
+    <div class="block-content" id="block4Content"></div>
+  </div>
+
+  <!-- Block 5: Reframe — full dark background -->
+  <div class="result-block reframe" id="block5">
+    <div class="block-header">
+      <span class="block-num" style="color:rgba(255,255,255,0.25)">05</span>
+      <span class="block-title" style="color:rgba(255,255,255,0.5)">If you want to hold this seriously — here's how I'd tighten it</span>
+    </div>
+    <div class="block-content" id="block5Content"></div>
+  </div>
+
+  <!-- Block 6: Score -->
+  <div class="result-block score-block" id="block6">
+    <div class="block-header">
+      <span class="block-num">06</span>
+      <span class="block-title">Where this leaves you</span>
+    </div>
+    <div class="score-display">
+      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-label">Confidence score / 100</div>
+      <div class="score-bar-track">
+        <div class="score-bar-fill" id="scoreBar"></div>
+      </div>
+      <div class="score-elevate" id="scoreElevate"></div>
+    </div>
+  </div>
+
+  <!-- Steal This Argument -->
+  <!-- Your reframe — ready to post -->
+  <div class="steal-block" id="stealBlock">
+    <div class="steal-label">
+      <div class="steal-label-left">Your take, sharpened</div>
+      <span id="stealCharCount"></span>
+    </div>
+    <div class="steal-text" id="stealText"></div>
+    <div class="steal-actions">
+      <a class="x-share-btn" id="xShareBtn" href="#" target="_blank" rel="noopener noreferrer">
+        <svg class="x-logo" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        Post on X
+      </a>
+      <button class="steal-copy-btn" id="stealCopyBtn" onclick="copySteal()">Copy text</button>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="result-actions" id="resultActions">
+    <button class="action-btn action-primary" onclick="openShare()">Share this result</button>
+    <button class="action-btn action-secondary" onclick="resetTool()">Test another take</button>
+    <button class="action-btn action-secondary" onclick="window.location.href='#'">Back to Axiom</button>
+  </div>
+
+</div>
+
+<!-- WHERE THIS LEADS -->
+<div class="leads-section" id="leadsSection">
+
+  <div class="leads-divider">
+    <div class="leads-title">Where this leads</div>
+  </div>
+
+  <p class="leads-subtitle">
+    If we were discussing this in person, I'd probably send you these.<br>
+    <em>Pick one. That's enough.</em>
+  </p>
+
+  <div class="pick-one">→ One is enough to shift your thinking</div>
+
+  <div class="lens-grid" id="lensSteps">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Sit with this -->
+  <div class="sit-block" id="sitBlock">
+    <div class="sit-label">Sit with this</div>
+    <div class="sit-prompt" id="sitPrompt"></div>
+  </div>
+
+  <!-- Closing line -->
+  <div class="closing-line" id="closingLine">
+    <div class="closing-text" id="closingText"></div>
+    <span class="closing-axiom">— Reframe by Axiom</span>
+  </div>
+
+  <!-- Community slot — v2 placeholder -->
+  <div class="community-slot" id="communitySlot" style="display:none">
+    <div class="community-slot-label">People who changed their mind on this read: — coming soon</div>
+  </div>
+
+</div>
+
+<!-- SHARE MODAL -->
+<div class="share-modal" id="shareModal">
+  <div class="share-card">
+    <button class="share-close" onclick="closeShare()">Close ×</button>
+    <div class="share-take" id="shareTake"></div>
+    <div class="share-assumption">You're assuming —</div>
+    <div class="share-assumption-text" id="shareAssumption"></div>
+    <div class="share-score-row">
+      <div class="share-score-num" id="shareScore">—</div>
+      <div class="share-score-label">Confidence<br>score / 100</div>
+    </div>
+    <div class="share-attribution">Reframed on <span>Axiom</span> · axiom.so</div>
+    <div class="share-actions">
+      <button class="share-copy-btn" onclick="copyShareText()">Copy for sharing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let currentScore = 0;
+let currentTake = '';
+let currentAssumption = '';
+let selectedConf = 'Fairly sure';
+
+// ── UTILS ──
+function updateChar(){
+  const v = document.getElementById('takeInput').value.length;
+  document.getElementById('charCount').textContent = v + ' / 1200';
+}
+
+function setTrigger(el, text){
+  document.querySelectorAll('.trigger').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const ta = document.getElementById('takeInput');
+  if(!ta.value.trim()){
+    ta.value = '';
+    ta.placeholder = text + '...';
+  }
+  ta.focus();
+}
+
+function toggleOptional(btn){
+  const fields = document.getElementById('optionalFields');
+  const chevron = document.getElementById('toggleChevron');
+  fields.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function setConf(btn, val){
+  document.querySelectorAll('.conf-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedConf = val;
+}
+
+function scrollTo(el){
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── THINKING ANIMATION ──
+function runThinkingAnimation(){
+  const lines = document.querySelectorAll('.think-line');
+  lines.forEach(l => { l.classList.remove('visible','active'); });
+
+  lines.forEach((line, i) => {
+    const delay = parseInt(line.dataset.delay) || 0;
+    setTimeout(() => {
+      // deactivate previous
+      if(i > 0) lines[i-1].classList.remove('active');
+      line.classList.add('visible','active');
+    }, delay);
+  });
+}
+
+// ── STREAM BLOCK ──
+function streamBlock(el, text, delay){
+  return new Promise(resolve => {
+    setTimeout(() => {
+      el.innerHTML = '';
+      el.closest('.result-block').classList.add('streamed');
+      const cursor = document.createElement('span');
+      cursor.className = 'stream-cursor';
+      el.appendChild(cursor);
+
+      // Stream text word by word
+      const words = text.split(' ');
+      let i = 0;
+      const interval = setInterval(() => {
+        if(i < words.length){
+          cursor.insertAdjacentText('beforebegin', (i === 0 ? '' : ' ') + words[i]);
+          i++;
+        } else {
+          clearInterval(interval);
+          cursor.remove();
+          resolve();
+        }
+      }, 38);
+
+      scrollTo(el.closest('.result-block'));
+    }, delay);
+  });
+}
+
+// ── MAIN RUN ──
+async function runStressTest(){
+  const take = document.getElementById('takeInput').value.trim();
+  if(!take || take.length < 10) {
+    document.getElementById('takeInput').style.borderColor = '#E8441A';
+    document.getElementById('takeInput').focus();
+    setTimeout(() => document.getElementById('takeInput').style.borderColor = '', 2000);
+    return;
+  }
+
+  currentTake = take;
+  const ctx = document.getElementById('contextInput')?.value.trim() || '';
+  const src = document.getElementById('sourceInput')?.value.trim() || '';
+
+  // Clear any previous notice
+  clearNotice();
+
+  // Hide input, show thinking
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('thinkingState').classList.add('active');
+  document.getElementById('submitBtn').disabled = true;
+
+  scrollTo(document.getElementById('thinkingState'));
+  runThinkingAnimation();
+
+  // Build prompt
+  const prompt = `You are Axiom — a sharp, intellectually honest thinking tool. Your voice is that of the most well-read, honest person the user knows. Warm but direct. Never preachy. Never generic.
+
+A user has submitted a take to be reframed. Respond ONLY with a valid JSON object. No markdown, no preamble, no code fences.
+
+Take: "${take}"
+${ctx ? `Context: "${ctx}"` : ''}
+${src ? `Source/trigger: "${src}"` : ''}
+Confidence level going in: ${selectedConf}
+
+Return exactly this JSON structure:
+{
+  "situate": "2-3 sentences situating this view in its intellectual tradition. Warm, contextual, makes them feel understood. Start with 'This is a view that...' or similar.",
+  "assumption": "The single core unstated assumption as ONE clean sentence starting with 'You're assuming that...' Make it specific, not generic.",
+  "assumption_detail": "1-2 sentences expanding on why this assumption matters and what happens if it doesn't hold.",
+  "counter": "The single strongest counterargument, steel-manned. 3-4 sentences. Someone who holds the opposing view would recognise this as a fair representation. Must make the reader pause.",
+  "beneath": "2-3 sentences on the incentive/power landscape around this view. Who benefits from its spread? Delivered factually, not cynically.",
+  "reframe": "The tightened, defensible version of this take. 2-3 sentences. Should feel like an upgrade, not a refutation. The user should think 'that's what I meant, said better.'",
+  "score": a number between 25 and 72,
+  "score_note": "One sentence on what specifically would raise this score.",
+  "steal": "The user's original take, rewritten in their own register and voice — as if they'd had this entire conversation and were now posting the sharpest version of what they actually believe. Max 240 characters. No hashtags. No em-dashes. Reads like something a real person would post on X, not a summary. First person. Confident. Ends on a strong note.",
+  "lenses": [
+    {
+      "step": "Start here",
+      "type": "The Deep Cut",
+      "anchor": "If you only read one thing on this...",
+      "title": "Actual real title of a specific essay, article, or long read directly relevant to this take",
+      "source": "Publication or author name",
+      "format": "Essay",
+      "tag": "Foundation",
+      "tag_color": "#1B3F6B",
+      "why": "One sentence on why specifically this piece for this specific take."
+    },
+    {
+      "step": "The framework",
+      "type": "The Book",
+      "anchor": "This is the foundation your take is sitting on...",
+      "title": "Actual real book title that is the canonical text on this intellectual territory",
+      "source": "Author name",
+      "format": "Book",
+      "tag": "First Principles",
+      "tag_color": "#006B5E",
+      "why": "One sentence on why this book for this take."
+    },
+    {
+      "step": "Challenge yourself",
+      "type": "The Counter",
+      "anchor": "The best serious argument against you...",
+      "title": "Actual real title of a piece that seriously argues the opposing position",
+      "source": "Publication or author name",
+      "format": "Essay",
+      "tag": "Flip Side",
+      "tag_color": "#C24B2A",
+      "why": "One sentence on why this counter piece for this take."
+    },
+    {
+      "step": "Expand your thinking",
+      "type": "The Unexpected",
+      "anchor": "Same pattern, completely different world...",
+      "title": "Actual real title of a piece from a different domain that illuminates the same underlying question",
+      "source": "Publication or author name",
+      "format": "Essay",
+      "tag": "Zoom Out",
+      "tag_color": "#5C3A8C",
+      "why": "One sentence connecting this unexpected piece to the specific take."
+    },
+    {
+      "step": "Ease into it",
+      "type": "Watch or Listen",
+      "anchor": "If you'd rather not read right now...",
+      "title": "Actual real title of a documentary, YouTube video, podcast episode, or film relevant to this take",
+      "source": "Channel, show, or platform name",
+      "format": "Video or Podcast",
+      "tag": "Watch",
+      "tag_color": "#2A6B3A",
+      "why": "One sentence on why this video/podcast for this take."
+    }
+  ],
+  "sit_with_this": "A single powerful reflective question tailored specifically to this take and its blind spot. No link. Starts with 'If' or 'What if' or 'When'. Makes the person think without leaving the page.",
+  "closing_line": "A single dry, warm, slightly witty line that closes the whole experience. Specific to this take — not generic. Sounds like the last line of a good essay. Not a joke, not a motivational quote. Just the right note."
+}`;
+
+  try {
+    const res = await fetch('/api/reframe', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const raw = data.content[0].text.replace(/```json|```/g,'').trim();
+
+    // Detect refusal — model returned prose not JSON
+    if(!raw.startsWith('{')){
+      document.getElementById('thinkingState').classList.remove('active');
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('submitBtn').disabled = false;
+      showRefusal();
+      return;
+    }
+
+    const p = JSON.parse(raw);
+
+    // Store for sharing
+    currentScore = p.score;
+    currentAssumption = p.assumption;
+
+    // Hide thinking, show results
+    document.getElementById('thinkingState').classList.remove('active');
+    document.getElementById('resultsSection').classList.add('active');
+
+    // Set echo
+    document.getElementById('takeEchoText').textContent = '"' + take + '"';
+    document.getElementById('takeEcho').style.animation = 'fadeUp 0.5s ease forwards';
+
+    scrollTo(document.getElementById('resultsSection'));
+
+    // Stream blocks sequentially
+    await streamBlock(document.getElementById('block1Content'), p.situate, 300);
+
+    // Blind spot — special treatment
+    await new Promise(resolve => setTimeout(resolve, 400));
+    document.getElementById('block2').classList.add('streamed');
+    document.getElementById('block2Statement').innerHTML = p.assumption + '<span class="stream-cursor"></span>';
+    scrollTo(document.getElementById('block2'));
+    await new Promise(resolve => setTimeout(resolve, 800));
+    document.getElementById('block2Statement').querySelector('.stream-cursor')?.remove();
+    await streamBlock(document.getElementById('block2Content'), p.assumption_detail, 200);
+
+    await streamBlock(document.getElementById('block3Content'), p.counter, 600);
+    await streamBlock(document.getElementById('block4Content'), p.beneath, 500);
+    await streamBlock(document.getElementById('block5Content'), p.reframe, 500);
+
+    // Score block
+    await new Promise(resolve => setTimeout(resolve, 600));
+    document.getElementById('block6').classList.add('streamed');
+    scrollTo(document.getElementById('block6'));
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    // Animate score number counting up
+    let n = 0;
+    const target = p.score;
+    const scoreEl = document.getElementById('scoreNum');
+    const countInterval = setInterval(() => {
+      n = Math.min(n + 2, target);
+      scoreEl.textContent = n;
+      if(n >= target) {
+        clearInterval(countInterval);
+        document.getElementById('scoreBar').style.width = target + '%';
+        document.getElementById('scoreElevate').textContent = p.score_note;
+      }
+    }, 22);
+
+    // Share data
+    document.getElementById('shareTake').textContent = '"' + take + '"';
+    document.getElementById('shareAssumption').textContent = p.assumption;
+    document.getElementById('shareScore').textContent = p.score;
+
+    // Steal / Your take sharpened
+    await new Promise(resolve => setTimeout(resolve, 800));
+    document.getElementById('stealBlock').classList.add('streamed');
+    const stealText = p.steal;
+    document.getElementById('stealText').textContent = stealText;
+    document.getElementById('stealCharCount').textContent = stealText.length + ' chars';
+    // Build X share URL
+    const xText = encodeURIComponent(stealText + '\n\n— reframed on axiom.so/reframe');
+    document.getElementById('xShareBtn').href = `https://x.com/intent/tweet?text=${xText}`;
+    scrollTo(document.getElementById('stealBlock'));
+
+    // Actions
+    await new Promise(resolve => setTimeout(resolve, 400));
+    document.getElementById('resultActions').classList.add('streamed');
+
+    // WHERE THIS LEADS — render after a breath
+    await new Promise(resolve => setTimeout(resolve, 800));
+    renderLeads(p);
+
+  } catch(e) {
+    document.getElementById('thinkingState').classList.remove('active');
+    document.getElementById('inputSection').style.display = 'block';
+    document.getElementById('submitBtn').disabled = false;
+    // If JSON parse failed it's likely a refusal
+    if(e instanceof SyntaxError){
+      showRefusal();
+    } else {
+      showError();
+    }
+    console.error(e);
+  }
+}
+
+// ── REFUSAL & ERROR NOTICES ──
+function showRefusal(){
+  const notice = document.getElementById('inputNotice');
+  notice.innerHTML = `
+    <div style="padding:16px 20px;border-left:3px solid var(--accent);background:var(--accent-bg);margin-bottom:20px;animation:fadeUp 0.3s ease forwards">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">Reframe can't work with this one</div>
+      <div style="font-size:13px;color:var(--ink3);line-height:1.6">Reframe is built for opinions worth examining — contested ideas, genuine positions, views that deserve a sharper argument. This take falls outside that. Try a different one.</div>
+    </div>`;
+  scrollTo(notice);
+}
+
+function showError(){
+  const notice = document.getElementById('inputNotice');
+  notice.innerHTML = `
+    <div style="padding:16px 20px;border-left:3px solid var(--faint);background:var(--off);margin-bottom:20px;animation:fadeUp 0.3s ease forwards">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Something went wrong</div>
+      <div style="font-size:13px;color:var(--ink3);line-height:1.6">The connection dropped. Your take is still there — try again.</div>
+    </div>`;
+  scrollTo(notice);
+}
+
+function clearNotice(){
+  document.getElementById('inputNotice').innerHTML = '';
+}
+
+// ── RENDER LEADS ──
+// Map source names to Unsplash-style topic images for thumbnails
+function getThumbUrl(lens){
+  // Use Unsplash source API for relevant topic imagery
+  const topicMap = {
+    'Essay':'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=400&q=60',
+    'Book':'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=60',
+    'Video':'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=60',
+    'Podcast':'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&q=60',
+    'Video or Podcast':'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&q=60',
+    'Documentary':'https://images.unsplash.com/photo-1536240478700-b869ad10e128?w=400&q=60',
+  };
+  return topicMap[lens.format] || 'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=400&q=60';
+}
+
+function getFaviconUrl(source){
+  // Extract domain for favicon from known sources
+  const domainMap = {
+    'The Ken':'the-ken.com',
+    'Mint':'livemint.com',
+    'The Economist':'economist.com',
+    'The Atlantic':'theatlantic.com',
+    'New Yorker':'newyorker.com',
+    'Substack':'substack.com',
+    'YouTube':'youtube.com',
+    'Netflix':'netflix.com',
+    'Spotify':'spotify.com',
+    'Hindustan Times':'hindustantimes.com',
+    'Times of India':'timesofindia.com',
+    'The Guardian':'theguardian.com',
+    'Bloomberg':'bloomberg.com',
+    'Forbes':'forbes.com',
+    'Harvard Business Review':'hbr.org',
+    'Financial Times':'ft.com',
+    'Wired':'wired.com',
+    'TechCrunch':'techcrunch.com',
+    'Nature':'nature.com',
+    'Reuters':'reuters.com',
+    'BBC':'bbc.com',
+    'Al Jazeera':'aljazeera.com',
+    'Scroll':'scroll.in',
+    'The Wire':'thewire.in',
+    'Pitchfork':'pitchfork.com',
+    'Rolling Stone':'rollingstone.com',
+  };
+
+  // Try to find a matching domain
+  for(const [name, domain] of Object.entries(domainMap)){
+    if(source.toLowerCase().includes(name.toLowerCase())){
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+    }
+  }
+  // Generic fallback — extract first letters
+  return null;
+}
+
+function getInitials(source){
+  return source.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function renderLeads(p){
+  if(!p.lenses || !p.lenses.length) return;
+
+  const section = document.getElementById('leadsSection');
+  section.classList.add('active');
+  scrollTo(section);
+
+  const container = document.getElementById('lensSteps');
+  container.innerHTML = '';
+
+  const themes = [0,1,2,3,4,5];
+
+  p.lenses.forEach((lens, i) => {
+    const card = document.createElement('a');
+    card.className = `lens-card theme-${themes[i] || i}`;
+    card.href = '#';
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+
+    const thumbUrl = getThumbUrl(lens);
+    const faviconUrl = getFaviconUrl(lens.source);
+    const initials = getInitials(lens.source);
+
+    const logoHtml = faviconUrl
+      ? `<img src="${faviconUrl}" alt="${lens.source}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      + `<span class="lens-source-logo-fallback" style="display:none">${initials}</span>`
+      : `<span class="lens-source-logo-fallback">${initials}</span>`;
+
+    card.innerHTML = `
+      <div class="lens-thumb">
+        <img class="lens-thumb-img" src="${thumbUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
+        <div class="lens-thumb-overlay"></div>
+        <div class="lens-source-logo">${logoHtml}</div>
+        <span class="lens-format-badge">${lens.format}</span>
+        <span class="lens-step-label">${lens.step}</span>
+        <span class="lens-arrow-icon">↗</span>
+      </div>
+      <div class="lens-body">
+        <span class="lens-type-label">${lens.type}</span>
+        <span class="lens-anchor">${lens.anchor}</span>
+        <div class="lens-title">${lens.title}</div>
+        <div class="lens-source-line">${lens.source}</div>
+        <div class="lens-why">${lens.why}</div>
+        <span class="lens-tag-pill">${lens.tag}</span>
+      </div>`;
+
+    container.appendChild(card);
+
+    setTimeout(() => {
+      card.classList.add('revealed');
+    }, i * 140);
+  });
+
+  // Sit with this
+  setTimeout(() => {
+    const sitBlock = document.getElementById('sitBlock');
+    sitBlock.classList.add('revealed');
+    document.getElementById('sitPrompt').textContent = p.sit_with_this;
+  }, p.lenses.length * 140 + 400);
+
+  // Closing line
+  setTimeout(() => {
+    const cl = document.getElementById('closingLine');
+    cl.classList.add('revealed');
+    document.getElementById('closingText').textContent = p.closing_line;
+  }, p.lenses.length * 140 + 900);
+}
+
+function copySteal(){
+  const text = document.getElementById('stealText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('stealCopyBtn');
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = 'Copy text', 2000);
+  });
+}
+
+// ── SHARE ──
+function openShare(){ document.getElementById('shareModal').classList.add('open') }
+function closeShare(){ document.getElementById('shareModal').classList.remove('open') }
+
+function copyShareText(){
+  const text = `My take scored ${currentScore}/100 on Axiom.\n\n${currentAssumption}\n\nReframe your thinking: axiom.so/reframe`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.share-copy-btn');
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = 'Copy for sharing', 2000);
+  });
+}
+
+// ── RESET ──
+function resetTool(){
+  document.getElementById('resultsSection').classList.remove('active');
+  document.getElementById('leadsSection').classList.remove('active');
+  document.getElementById('inputSection').style.display = 'block';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('takeInput').value = '';
+  document.getElementById('charCount').textContent = '0 / 1200';
+  document.querySelectorAll('.result-block').forEach(b => {
+    b.classList.remove('streamed');
+    b.style.opacity = '0';
+    b.style.transform = 'translateY(16px)';
+  });
+  document.getElementById('stealBlock').classList.remove('streamed');
+  document.getElementById('resultActions').classList.remove('streamed');
+  document.getElementById('scoreBar').style.width = '0';
+  document.getElementById('scoreNum').textContent = '—';
+  document.getElementById('lensSteps').innerHTML = '';
+  document.getElementById('sitBlock').classList.remove('revealed');
+  document.getElementById('closingLine').classList.remove('revealed');
+  document.getElementById('sitBlock').style.opacity = '0';
+  document.getElementById('closingLine').style.opacity = '0';
+  document.getElementById('leadsSection').style.opacity = '0';
+  document.getElementById('leadsSection').style.animation = 'none';
+  clearNotice();
+  document.querySelectorAll('.trigger').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.conf-opt').forEach(b => b.classList.remove('selected'));
+  selectedConf = 'Fairly sure';
+  scrollTo(document.querySelector('.hero'));
+}
+
+// Close modal on backdrop click
+document.getElementById('shareModal').addEventListener('click', function(e){
+  if(e.target === this) closeShare();
+});
+</script>
+</body>
+</html>
