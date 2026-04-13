@@ -532,7 +532,7 @@ nav{
 
 /* Block 6 — Score */
 .result-block.score-block{
-  padding:48px 0;
+  padding:36px 0 24px;
   border-bottom:none;
 }
 
@@ -685,8 +685,8 @@ nav{
 .result-actions{
   display:flex;gap:12px;
   flex-wrap:wrap;
-  margin-top:48px;
-  padding-top:32px;
+  margin-top:32px;
+  padding-top:24px;
   border-top:1px solid var(--rule);
   opacity:0;
 }
@@ -720,116 +720,231 @@ nav{
 }
 .action-secondary:hover{border-color:var(--ink)}
 
-/* Share card modal */
+/* ── SHARE MODAL ── */
 .share-modal{
   display:none;
   position:fixed;inset:0;
-  background:rgba(10,10,8,0.7);
+  background:rgba(10,10,8,0.85);
   z-index:500;
   align-items:center;justify-content:center;
-  backdrop-filter:blur(4px);
+  backdrop-filter:blur(6px);
+  padding:20px;
 }
-
 .share-modal.open{display:flex}
 
-.share-card{
-  background:var(--ink);
-  width:440px;
-  max-width:90vw;
-  padding:40px;
-  position:relative;
+.share-shell{
+  width:100%;max-width:860px;
+  display:flex;flex-direction:column;
+  gap:20px;
   animation:fadeUp 0.3s ease;
+  max-height:95vh;
+  overflow-y:auto;
 }
 
+/* Top bar */
+.share-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.share-topbar-title{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.45);
+}
 .share-close{
-  position:absolute;top:16px;right:20px;
   font-family:var(--mono);font-size:9px;
   letter-spacing:0.1em;text-transform:uppercase;
   color:rgba(255,255,255,0.4);
   cursor:pointer;background:none;border:none;
-  transition:color 0.12s;
+  transition:color 0.12s;padding:4px 0;
 }
-.share-close:hover{color:rgba(255,255,255,0.8)}
+.share-close:hover{color:rgba(255,255,255,0.9)}
 
-.share-take{
-  font-family:var(--serif);
-  font-style:italic;
-  font-size:15px;
-  color:rgba(255,255,255,0.6);
-  line-height:1.5;
-  margin-bottom:24px;
-  padding-bottom:24px;
-  border-bottom:1px solid rgba(255,255,255,0.1);
+/* Card nav */
+.share-card-nav{
+  display:flex;align-items:center;gap:10px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+.share-nav-btn{
+  flex-shrink:0;
+  padding:6px 14px;
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.15);
+  background:transparent;color:rgba(255,255,255,0.45);
+  cursor:pointer;transition:all 0.15s;border-radius:2px;
+  white-space:nowrap;
+}
+.share-nav-btn:hover{border-color:rgba(255,255,255,0.4);color:rgba(255,255,255,0.8)}
+.share-nav-btn.active{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.4);color:white}
+
+/* The card itself — rendered area */
+.share-card-wrap{
+  display:flex;justify-content:center;
 }
 
-.share-assumption{
-  font-family:var(--mono);
-  font-size:9px;
-  letter-spacing:0.12em;
+.share-card{
+  font-family:'DM Serif Display',Georgia,serif;
+  background:var(--ink);
+  position:relative;
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+/* Square format: 1080×1080 displayed at 400px */
+.share-card.fmt-square{
+  width:400px;height:400px;
+}
+/* Story format: 1080×1920 displayed at 225×400 */
+.share-card.fmt-story{
+  width:225px;height:400px;
+}
+
+/* Shared card inner padding */
+.sc-inner{
+  position:absolute;inset:0;
+  padding:32px;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+}
+
+/* Card elements */
+.sc-eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:0.14em;
   text-transform:uppercase;
-  color:var(--accent2);
+  color:rgba(255,255,255,0.35);
   margin-bottom:8px;
 }
-
-.share-assumption-text{
-  font-family:var(--serif);
-  font-style:italic;
-  font-size:18px;
-  color:var(--white);
-  line-height:1.35;
-  margin-bottom:24px;
-}
-
-.share-score-row{
-  display:flex;align-items:baseline;gap:12px;
-  padding:20px 0;
-  border-top:1px solid rgba(255,255,255,0.1);
+.sc-take{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-style:italic;font-size:11px;
+  color:rgba(255,255,255,0.5);
+  line-height:1.4;margin-bottom:16px;
+  padding-bottom:14px;
   border-bottom:1px solid rgba(255,255,255,0.1);
-  margin-bottom:20px;
 }
-
-.share-score-num{
-  font-family:var(--serif);
-  font-size:52px;
-  color:var(--white);
-  line-height:1;
-  letter-spacing:-0.03em;
-}
-
-.share-score-label{
-  font-family:var(--mono);
-  font-size:9px;
-  letter-spacing:0.1em;
+.sc-label{
+  font-family:'Space Mono',monospace;
+  font-size:7px;letter-spacing:0.14em;
   text-transform:uppercase;
-  color:rgba(255,255,255,0.4);
+  color:var(--accent);margin-bottom:8px;
+}
+.sc-main{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-style:italic;
+  color:white;
+  line-height:1.2;
+  flex:1;
+  display:flex;align-items:center;
+}
+.sc-score-num{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:88px;line-height:1;
+  color:white;letter-spacing:-0.04em;
+  margin-bottom:8px;
+}
+.sc-score-note{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:0.04em;
+  color:rgba(255,255,255,0.5);
+  line-height:1.5;margin-top:8px;
+  max-width:240px;
 }
 
-.share-attribution{
-  font-family:var(--mono);
-  font-size:9px;
-  letter-spacing:0.1em;
+/* Bottom branding strip */
+.sc-brand{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.1);
+  margin-top:16px;
+}
+.sc-brand-logo{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:15px;color:white;letter-spacing:0.01em;
+}
+.sc-brand-sub{
+  font-family:'Space Mono',monospace;
+  font-size:7px;letter-spacing:0.1em;
+  text-transform:uppercase;
   color:rgba(255,255,255,0.3);
 }
 
-.share-attribution span{color:var(--accent2)}
-
-.share-actions{
-  display:flex;gap:8px;margin-top:20px;
+/* Accent bar at top of card */
+.sc-accent-bar{
+  position:absolute;top:0;left:0;right:0;
+  height:3px;background:var(--accent);
 }
 
-.share-copy-btn{
-  flex:1;padding:10px;
-  background:var(--accent);
-  color:var(--white);
+/* Card 4 sit-with-this — light card */
+.share-card.card-sit{
+  background:var(--paper,#F5F2EB);
+}
+.share-card.card-sit .sc-main{color:var(--ink);}
+.share-card.card-sit .sc-label{color:var(--mid,#5a5850);}
+.share-card.card-sit .sc-brand-logo{color:var(--ink);}
+.share-card.card-sit .sc-brand-sub{color:var(--mid,#5a5850);}
+.share-card.card-sit .sc-brand{border-top-color:rgba(14,14,12,0.12);}
+.share-card.card-sit .sc-accent-bar{background:var(--ink);}
+
+/* Card 6 sassy — accent background */
+.share-card.card-sassy{background:#E8441A;}
+.share-card.card-sassy .sc-main{color:white;}
+.share-card.card-sassy .sc-brand{border-top-color:rgba(255,255,255,0.2);}
+.share-card.card-sassy .sc-brand-logo{color:white;}
+.share-card.card-sassy .sc-brand-sub{color:rgba(255,255,255,0.5);}
+.share-card.card-sassy .sc-accent-bar{background:var(--ink);}
+
+/* Format toggle */
+.share-fmt-row{
+  display:flex;align-items:center;gap:8px;
+}
+.share-fmt-label{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+}
+.share-fmt-btn{
+  padding:5px 12px;
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:0.08em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.15);
+  background:transparent;color:rgba(255,255,255,0.4);
+  cursor:pointer;transition:all 0.15s;border-radius:2px;
+}
+.share-fmt-btn.active{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.4);color:white;}
+
+/* Action row */
+.share-action-row{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+}
+.share-dl-btn{
+  flex:1;min-width:140px;
+  padding:12px 18px;
+  background:white;color:var(--ink);
   border:none;
-  font-family:var(--mono);
-  font-size:9px;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  cursor:pointer;
-  transition:opacity 0.15s;
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;transition:opacity 0.15s;
 }
-.share-copy-btn:hover{opacity:0.85}
+.share-dl-btn:hover{opacity:0.88}
+.share-x-btn{
+  flex:1;min-width:120px;
+  padding:12px 18px;
+  background:transparent;color:white;
+  border:1px solid rgba(255,255,255,0.25);
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.share-x-btn:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05);}
+.share-hint{
+  font-family:var(--mono);font-size:8px;
+  color:rgba(255,255,255,0.25);
+  letter-spacing:0.04em;
+  width:100%;text-align:center;
+}
 
 /* Leads actions */
 .leads-actions{
@@ -886,8 +1001,8 @@ nav{
 
 .leads-divider{
   display:flex;align-items:center;gap:16px;
-  margin-bottom:40px;
-  padding-top:48px;
+  margin-bottom:32px;
+  padding-top:32px;
   border-top:2px solid var(--ink);
 }
 
@@ -1405,6 +1520,7 @@ nav{padding:16px var(--px)}
   .closing-text{font-size:14px}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1645,19 +1761,55 @@ nav{padding:16px var(--px)}
 
 <!-- SHARE MODAL -->
 <div class="share-modal" id="shareModal">
-  <div class="share-card">
-    <button class="share-close" onclick="closeShare()">Close ×</button>
-    <div class="share-take" id="shareTake"></div>
-    <div class="share-assumption">You're assuming —</div>
-    <div class="share-assumption-text" id="shareAssumption"></div>
-    <div class="share-score-row">
-      <div class="share-score-num" id="shareScore">—</div>
-      <div class="share-score-label">Confidence<br>score / 100</div>
+  <div class="share-shell">
+
+    <!-- Top bar -->
+    <div class="share-topbar">
+      <span class="share-topbar-title">Share your result</span>
+      <button class="share-close" onclick="closeShare()">Close ×</button>
     </div>
-    <div class="share-attribution">Reframed on <span>Axiom</span> · axiom.so</div>
-    <div class="share-actions">
-      <button class="share-copy-btn" onclick="copyShareText()">Copy for sharing</button>
+
+    <!-- Card type selector -->
+    <div class="share-card-nav" id="shareCardNav">
+      <button class="share-nav-btn active" onclick="setShareCard(0,this)">Assumption</button>
+      <button class="share-nav-btn" onclick="setShareCard(1,this)">Take sharpened</button>
+      <button class="share-nav-btn" onclick="setShareCard(2,this)">Strongest critic</button>
+      <button class="share-nav-btn" onclick="setShareCard(3,this)">Sit with this</button>
+      <button class="share-nav-btn" onclick="setShareCard(4,this)">Score</button>
+      <button class="share-nav-btn" onclick="setShareCard(5,this)">The closer</button>
     </div>
+
+    <!-- Card preview -->
+    <div class="share-card-wrap">
+      <div class="share-card fmt-square" id="shareCard">
+        <div class="sc-accent-bar"></div>
+        <div class="sc-inner" id="scInner">
+          <!-- Populated by setShareCard() -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Format toggle -->
+    <div class="share-fmt-row">
+      <span class="share-fmt-label">Format</span>
+      <button class="share-fmt-btn active" onclick="setShareFmt('square',this)">Square</button>
+      <button class="share-fmt-btn" onclick="setShareFmt('story',this)">Story</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="share-action-row">
+      <button class="share-dl-btn" id="shareDlBtn" onclick="downloadCard()">
+        ↓ Download image
+      </button>
+      <button class="share-x-btn" id="shareXBtn" onclick="postOnX()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        Post on X
+      </button>
+      <span class="share-hint">Download → open Instagram → share from camera roll</span>
+    </div>
+
   </div>
 </div>
 
@@ -2038,9 +2190,7 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
       }
     }, 22);
 
-    document.getElementById('shareTake').textContent       = '"' + take + '"';
-    document.getElementById('shareAssumption').textContent = p.assumption;
-    document.getElementById('shareScore').textContent      = p.score;
+    setShareData(p, take);
 
     // Render carousel + closing line
     await new Promise(r => setTimeout(r, 1000));
@@ -2267,16 +2417,153 @@ function copySteal(){
 }
 
 // ── SHARE ──
-function openShare(){ document.getElementById('shareModal').classList.add('open') }
-function closeShare(){ document.getElementById('shareModal').classList.remove('open') }
+let shareData = {};
+let shareCardIndex = 0;
+let shareFmt = 'square';
 
-function copyShareText(){
-  const text = `My take scored ${currentScore}/100 on Axiom.\n\n${currentAssumption}\n\nReframe your thinking: axiom.so/reframe`;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector('.share-copy-btn');
-    btn.textContent = 'Copied ✓';
-    setTimeout(() => btn.textContent = 'Copy for sharing', 2000);
+function openShare(){
+  document.getElementById('shareModal').classList.add('open');
+  setShareCard(0, document.querySelector('.share-nav-btn'));
+}
+
+function closeShare(){
+  document.getElementById('shareModal').classList.remove('open');
+}
+
+function setShareData(p, take){
+  shareData = {
+    take: take,
+    assumption: p.assumption || '',
+    reframe: p.reframe || '',
+    counter: p.counter || '',
+    sit: p.sit_with_this || '',
+    score: p.score || 0,
+    score_note: p.score_note || '',
+    closing: p.closing_line || ''
+  };
+}
+
+function setShareCard(idx, btn){
+  shareCardIndex = idx;
+  document.querySelectorAll('.share-nav-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  const card = document.getElementById('shareCard');
+  const inner = document.getElementById('scInner');
+  const d = shareData;
+
+  // Reset card modifiers
+  card.className = `share-card fmt-${shareFmt}`;
+
+  const brandHtml = `
+    <div class="sc-brand">
+      <span class="sc-brand-logo">Axiom</span>
+      <span class="sc-brand-sub">Reframe by Axiom · axiom.so</span>
+    </div>`;
+
+  const takeQuote = d.take ? `<div class="sc-take">"${d.take.slice(0,120)}${d.take.length>120?'…':''}"</div>` : '';
+
+  const cards = [
+    // 0 — Assumption
+    () => `${takeQuote}
+      <div class="sc-label">You're assuming that —</div>
+      <div class="sc-main" style="font-size:${shareFmt==='story'?'18px':'20px'}">${d.assumption}</div>
+      ${brandHtml}`,
+
+    // 1 — Take sharpened
+    () => `${takeQuote}
+      <div class="sc-label">Your take, sharpened</div>
+      <div class="sc-main" style="font-size:${shareFmt==='story'?'16px':'18px'}">${d.reframe}</div>
+      ${brandHtml}`,
+
+    // 2 — Strongest critic
+    () => `${takeQuote}
+      <div class="sc-label">Your strongest critic would say</div>
+      <div class="sc-main" style="font-size:${shareFmt==='story'?'14px':'15px'}">${d.counter}</div>
+      ${brandHtml}`,
+
+    // 3 — Sit with this (light card)
+    () => {
+      card.classList.add('card-sit');
+      return `<div style="flex:1;display:flex;align-items:center;">
+        <div>
+          <div class="sc-label">Sit with this</div>
+          <div class="sc-main" style="font-size:${shareFmt==='story'?'20px':'22px'};color:var(--ink)">${d.sit}</div>
+        </div>
+      </div>
+      ${brandHtml}`;
+    },
+
+    // 4 — Score
+    () => `${takeQuote}
+      <div>
+        <div class="sc-label">Defensibility score</div>
+        <div class="sc-score-num">${d.score}</div>
+        <div class="sc-score-note">${d.score_note}</div>
+      </div>
+      ${brandHtml}`,
+
+    // 5 — Sassy closer (accent bg)
+    () => {
+      card.classList.add('card-sassy');
+      return `<div style="flex:1;display:flex;align-items:center;">
+        <div class="sc-main" style="font-size:${shareFmt==='story'?'20px':'22px'};font-style:italic;color:white">${d.closing}</div>
+      </div>
+      ${brandHtml}`;
+    }
+  ];
+
+  inner.innerHTML = cards[idx]();
+
+  // Update X button text
+  const xTexts = [d.assumption, d.reframe, d.counter, d.sit, `I scored ${d.score}/100 on Reframe by Axiom.`, d.closing];
+  document.getElementById('shareXBtn').onclick = () => postOnX(xTexts[idx]);
+}
+
+function setShareFmt(fmt, btn){
+  shareFmt = fmt;
+  document.querySelectorAll('.share-fmt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const card = document.getElementById('shareCard');
+  card.classList.remove('fmt-square','fmt-story');
+  card.classList.add('fmt-'+fmt);
+  setShareCard(shareCardIndex, null);
+}
+
+function downloadCard(){
+  const card = document.getElementById('shareCard');
+  const btn = document.getElementById('shareDlBtn');
+  btn.textContent = 'Generating...';
+
+  // Scale factor: card is 400px displayed, output at 1080px
+  const scale = shareFmt === 'square' ? 1080/400 : 1080/225;
+
+  html2canvas(card, {
+    scale: scale,
+    useCORS: true,
+    backgroundColor: null,
+    logging: false
+  }).then(canvas => {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `axiom-reframe-${['assumption','sharpened','critic','sit','score','closer'][shareCardIndex]}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+      btn.textContent = '✓ Downloaded';
+      setTimeout(() => btn.textContent = '↓ Download image', 2500);
+    }, 'image/png');
+  }).catch(() => {
+    btn.textContent = 'Try again';
+    setTimeout(() => btn.textContent = '↓ Download image', 2000);
   });
+}
+
+function postOnX(text){
+  const t = text || shareData.assumption;
+  const tweet = encodeURIComponent(t.slice(0,220) + '\n\nreframed on axiom.so/reframe');
+  window.open(`https://x.com/intent/tweet?text=${tweet}`, '_blank');
 }
 
 // ── RESET ──
