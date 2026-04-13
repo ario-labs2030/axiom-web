@@ -1647,222 +1647,282 @@ function streamBlock(el, text, delay){
   });
 }
 
-// ── MAIN RUN ──
+// ══════════════════════════════════════════════
+// CLASSIFICATION TREE — every node is a distinct bucket
+// Mirrors the tree exactly as designed
+// ══════════════════════════════════════════════
+
+// ── NODE 1: JS pre-checks (zero API cost) ──
+function jsPreCheck(text){
+  if(!text || text.trim().length < 6) return { pass:false, reason:'too_short' };
+  const t = text.trim();
+  const noSpace = t.replace(/\s/g,'');
+  const unique = new Set(noSpace.toLowerCase()).size;
+  const ratio = unique / noSpace.length;
+  if(noSpace.length > 5 && ratio > 0.75 && !/[aeiou]/i.test(noSpace))
+    return { pass:false, reason:'keyboard_mash' };
+  if(/^[\d\s\W]+$/.test(t)) return { pass:false, reason:'no_words' };
+  return { pass:true };
+}
+
+// ── NODE 2: Language check (JS heuristic, zero API cost) ──
+function languageCheck(text){
+  const nonLatin = /[\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF\u0400-\u04FF]/;
+  if(nonLatin.test(text)) return 'non_english';
+  const hinglishWords = /\b(hai|hain|kya|nahi|bhai|yaar|aur|mera|tera|toh|woh|kuch|sab|accha|theek|bilkul|agar|phir|lekin)\b/i;
+  if(hinglishWords.test(text)) return 'hinglish';
+  return 'english';
+}
+
+// ── NODE 3: Harmful keyword check (JS, zero API cost) ──
+function harmfulCheck(text){
+  const t = text.toLowerCase();
+  const blocked = ['hitler was right','hitler was correct','nazis were right','genocide is good','kill all','rape is fine'];
+  return blocked.some(phrase => t.includes(phrase));
+}
+
+// ── INLINE NOTICE helper ──
+function showNotice(html, type='neutral'){
+  const borderColor = type==='warn' ? 'var(--accent)' : type==='info' ? 'var(--ink3)' : 'var(--faint)';
+  const notice = document.getElementById('inputNotice');
+  notice.innerHTML = `<div style="padding:14px 18px;border-left:3px solid ${borderColor};background:var(--off);margin-bottom:18px;animation:fadeUp 0.3s ease forwards">${html}</div>`;
+  scrollTo(notice);
+}
+
+// ── MAIN RUN — the full classification tree ──
 async function runStressTest(){
+  clearNotice();
   const take = document.getElementById('takeInput').value.trim();
-  if(!take || take.length < 10) {
-    document.getElementById('takeInput').style.borderColor = '#E8441A';
+
+  if(!take){
+    document.getElementById('takeInput').style.borderColor = 'var(--accent)';
     document.getElementById('takeInput').focus();
     setTimeout(() => document.getElementById('takeInput').style.borderColor = '', 2000);
     return;
   }
 
-  currentTake = take;
+  // NODE 1: JS pre-checks
+  const pre = jsPreCheck(take);
+  if(!pre.pass){
+    const msgs = {
+      too_short: 'A bit short — try stating your actual view in a full sentence.',
+      keyboard_mash: 'Reframe needs something to work with. Try a view you actually hold.',
+      no_words: 'That looks like numbers or symbols. State a position and Reframe will do the rest.'
+    };
+    showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Try this</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">${msgs[pre.reason]}</div>`, 'neutral');
+    return;
+  }
+
+  // NODE 2: Language check
+  const lang = languageCheck(take);
+  if(lang === 'non_english'){
+    showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Language</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">Reframe currently supports English only. More languages coming soon.</div>`, 'info');
+    return;
+  }
+
+  // NODE 3: Harmful check
+  if(harmfulCheck(take)){ showRefusal(); return; }
+
+  // NODE 4: URL detection — fetch title if present
   const ctx = document.getElementById('contextInput')?.value.trim() || '';
-  const src = document.getElementById('sourceInput')?.value.trim() || '';
+  const src = document.getElementById('sourceInput')?.value.trim()  || '';
+  let urlContext = '';
+  const urlPattern = /https?:\/\/[^\s]+/i;
+  const detectedUrl = ((src.match(urlPattern) || take.match(urlPattern)) || [])[0];
+  if(detectedUrl){
+    try{
+      const r = await fetch('/api/fetchmeta', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ url: detectedUrl })
+      });
+      if(r.ok){ const d = await r.json(); if(d.title) urlContext = `Source article: "${d.title}"`; }
+    }catch(_){}
+  }
 
-  // Clear any previous notice
-  clearNotice();
-
-  // Hide input, show thinking
+  // Passed all JS checks — show thinking state
+  currentTake = take;
   document.getElementById('inputSection').style.display = 'none';
   document.getElementById('thinkingState').classList.add('active');
   document.getElementById('submitBtn').disabled = true;
-
   scrollTo(document.getElementById('thinkingState'));
   runThinkingAnimation();
 
-  // Build prompt
-  const prompt = `You are Axiom — a sharp, intellectually honest thinking tool. Your voice is that of the most well-read, honest person the user knows. Warm but direct. Never preachy. Never generic.
+  try {
 
-A user has submitted a take to be reframed. Respond ONLY with a valid JSON object. No markdown, no preamble, no code fences.
+    // NODE 5: Haiku classification (cheap ~10 tokens)
+    const classRes = await fetch('/api/reframe', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-haiku-4-5-20251001', max_tokens:10,
+        messages:[{ role:'user', content:`Classify this input for a thinking tool. Respond with ONE word only from: POSITION, PHILOSOPHICAL, CULTURAL, QUESTION, UNCLEAR
+
+POSITION = clear opinion or stance on a topic
+PHILOSOPHICAL = abstract declaration, aphorism, or existential claim
+CULTURAL = song lyric, meme, movie quote, or expression with no clear stance (if context explains the stance, classify as POSITION instead)
+QUESTION = question that hides an opinion
+UNCLEAR = too vague or random to classify
+
+Input: "${take}"
+${ctx ? `Context the person added: "${ctx}"` : ''}
+${src && !src.match(/https?:\/\//i) ? `What triggered this: "${src}"` : ''}` }]
+      })
+    });
+    const classData = await classRes.json();
+    const inputType = classData.content[0].text.trim().toUpperCase().split(/\s/)[0];
+
+    // LEAF: Cultural — Haiku surfaces hidden positions inline
+    if(inputType === 'CULTURAL'){
+      const cultRes = await fetch('/api/reframe', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-haiku-4-5-20251001', max_tokens:120,
+          messages:[{ role:'user', content:`User submitted a cultural reference to a thinking tool: "${take}".${ctx ? ` They added this context: "${ctx}".` : ''} Write a warm response (under 60 words) that: 1) acknowledges what they sent in one friendly sentence 2) suggests 2-3 actual opinions that might be hiding inside this reference 3) invites them to pick one and submit it. Plain text only.` }]
+        })
+      });
+      const cultData = await cultRes.json();
+      document.getElementById('thinkingState').classList.remove('active');
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('submitBtn').disabled = false;
+      showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Let's find the take inside this</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">${cultData.content[0].text.trim()}</div>`, 'info');
+      return;
+    }
+
+    // LEAF: Question — Haiku flips to a position inline
+    if(inputType === 'QUESTION'){
+      const qRes = await fetch('/api/reframe', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-haiku-4-5-20251001', max_tokens:80,
+          messages:[{ role:'user', content:`User asked a question to a thinking tool: "${take}". Write 1-2 warm sentences (under 40 words) that name the opinion hiding in the question and ask them to confirm or rephrase as a stance. Plain text only.` }]
+        })
+      });
+      const qData = await qRes.json();
+      document.getElementById('thinkingState').classList.remove('active');
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('submitBtn').disabled = false;
+      showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Sounds like a position hiding as a question</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">${qData.content[0].text.trim()}</div>`, 'info');
+      return;
+    }
+
+    // NODE 6: Sonnet full reframe
+    // Reaches here for POSITION, PHILOSOPHICAL, UNCLEAR
+    const philosophicalNote = inputType === 'PHILOSOPHICAL'
+      ? 'This is a philosophical declaration. Treat it with full intellectual seriousness — name the tradition it comes from in one warm line before analysing it.' : '';
+    const confidenceNote = selectedConf === 'Strongly held'
+      ? 'The user holds this strongly. Be direct. Give the hardest honest counter. Do not soften.'
+      : selectedConf === 'Still forming'
+      ? 'The user is still forming this view. Be exploratory and encouraging, not adversarial.' : '';
+    const hinglishNote = lang === 'hinglish'
+      ? 'The input uses Hinglish. Respond in warm clear English but acknowledge the casual register.' : '';
+
+    const prompt = `You are Axiom — a sharp, honest thinking tool. Warm but direct. Never preachy. Never generic. Never academic.
+${philosophicalNote}
+${hinglishNote}
+${confidenceNote}
 
 Take: "${take}"
-${ctx ? `Context: "${ctx}"` : ''}
-${src ? `Source/trigger: "${src}"` : ''}
-Confidence level going in: ${selectedConf}
+${ctx ? `About the person / their context: "${ctx}"` : ''}
+${src && !src.match(/https?:\/\//i) ? `What triggered this take: "${src}"` : ''}
+${urlContext ? `Source article: ${urlContext}` : ''}
+Confidence level: ${selectedConf}
 
-Return exactly this JSON structure:
+Respond ONLY with valid JSON — no markdown, no preamble:
 {
-  "situate": "2-3 sentences situating this view in its intellectual tradition. Warm, contextual, makes them feel understood. Start with 'This is a view that...' or similar.",
-  "assumption": "The single core unstated assumption as ONE clean sentence starting with 'You're assuming that...' Make it specific, not generic.",
-  "assumption_detail": "1-2 sentences expanding on why this assumption matters and what happens if it doesn't hold.",
-  "counter": "The single strongest counterargument, steel-manned. 3-4 sentences. Someone who holds the opposing view would recognise this as a fair representation. Must make the reader pause.",
-  "beneath": "2-3 sentences on the incentive/power landscape around this view. Who benefits from its spread? Delivered factually, not cynically.",
-  "reframe": "The tightened, defensible version of this take. 2-3 sentences. Should feel like an upgrade, not a refutation. The user should think 'that's what I meant, said better.'",
-  "score": a number between 25 and 72,
-  "score_note": "One sentence on what specifically would raise this score.",
-  "steal": "The user's original take, rewritten in their own register and voice — as if they'd had this entire conversation and were now posting the sharpest version of what they actually believe. Max 240 characters. No hashtags. No em-dashes. Reads like something a real person would post on X, not a summary. First person. Confident. Ends on a strong note.",
+  "framing": "One paragraph under 55 words. Situates the view AND surfaces the core unstated assumption in the same breath. Starts with 'This is a view that...' Warm, honest.",
+  "assumption": "The single unstated assumption as ONE sentence starting with 'You\'re assuming that...' — specific not generic. This is the centrepiece.",
+  "counter": "The single strongest argument against this take. 2-3 sentences. Steel-manned. Must make the reader genuinely pause. No 'however' or 'on the other hand'.",
+  "reframe": "The defensible version of this take. 2 sentences. Feels like an upgrade not a refutation. Match their voice and register.",
+  "score": a number between 28 and 71,
+  "score_note": "One concrete sentence on what would specifically raise this score.",
+  "sit_with_this": "One reflective question starting with If or What if. Tailored to their specific blind spot.",
+  "steal": "Their take rewritten in their voice. Max 240 chars. No hashtags. No em-dashes. Confident. Ends strong.",
+  "closing_line": "One dry warm witty line closing the experience. Specific to this take.",
   "lenses": [
-    {
-      "step": "Start here",
-      "type": "The Deep Cut",
-      "anchor": "If you only read one thing on this...",
-      "title": "Actual real title of a specific essay, article, or long read directly relevant to this take",
-      "source": "Publication or author name",
-      "format": "Essay",
-      "tag": "Foundation",
-      "tag_color": "#1B3F6B",
-      "why": "One sentence on why specifically this piece for this specific take."
-    },
-    {
-      "step": "The framework",
-      "type": "The Book",
-      "anchor": "This is the foundation your take is sitting on...",
-      "title": "Actual real book title that is the canonical text on this intellectual territory",
-      "source": "Author name",
-      "format": "Book",
-      "tag": "First Principles",
-      "tag_color": "#006B5E",
-      "why": "One sentence on why this book for this take."
-    },
-    {
-      "step": "Challenge yourself",
-      "type": "The Counter",
-      "anchor": "The best serious argument against you...",
-      "title": "Actual real title of a piece that seriously argues the opposing position",
-      "source": "Publication or author name",
-      "format": "Essay",
-      "tag": "Flip Side",
-      "tag_color": "#C24B2A",
-      "why": "One sentence on why this counter piece for this take."
-    },
-    {
-      "step": "Expand your thinking",
-      "type": "The Unexpected",
-      "anchor": "Same pattern, completely different world...",
-      "title": "Actual real title of a piece from a different domain that illuminates the same underlying question",
-      "source": "Publication or author name",
-      "format": "Essay",
-      "tag": "Zoom Out",
-      "tag_color": "#5C3A8C",
-      "why": "One sentence connecting this unexpected piece to the specific take."
-    },
-    {
-      "step": "Ease into it",
-      "type": "Watch or Listen",
-      "anchor": "If you'd rather not read right now...",
-      "title": "Actual real title of a documentary, YouTube video, podcast episode, or film relevant to this take",
-      "source": "Channel, show, or platform name",
-      "format": "Video or Podcast",
-      "tag": "Watch",
-      "tag_color": "#2A6B3A",
-      "why": "One sentence on why this video/podcast for this take."
-    }
-  ],
-  "sit_with_this": "A single powerful reflective question tailored specifically to this take and its blind spot. No link. Starts with 'If' or 'What if' or 'When'. Makes the person think without leaving the page.",
-  "closing_line": "A single dry, warm, slightly witty line that closes the whole experience. Specific to this take — not generic. Sounds like the last line of a good essay. Not a joke, not a motivational quote. Just the right note."
+    {"step":"Start here","type":"The Deep Cut","anchor":"If you only read one thing on this...","title":"real title of a specific essay or article","source":"publication or author","format":"Essay","tag":"Foundation","tag_color":"#1B3F6B","why":"one sentence connecting to this take"},
+    {"step":"Challenge yourself","type":"The Counter","anchor":"The best serious argument against you...","title":"real title of a piece arguing the opposing position","source":"publication or author","format":"Essay","tag":"Flip Side","tag_color":"#C24B2A","why":"one sentence on why for this take"},
+    {"step":"Expand your thinking","type":"The Unexpected","anchor":"Same pattern, completely different world...","title":"real title from a different domain","source":"publication or author","format":"Essay","tag":"Zoom Out","tag_color":"#5C3A8C","why":"one sentence connecting to this take"}
+  ]
 }`;
 
-  try {
     const res = await fetch('/api/reframe', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2500,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:2000, messages:[{ role:'user', content: prompt }] })
     });
 
     const data = await res.json();
     const raw = data.content[0].text.replace(/```json|```/g,'').trim();
 
-    // Detect refusal — model returned prose not JSON
     if(!raw.startsWith('{')){
       document.getElementById('thinkingState').classList.remove('active');
       document.getElementById('inputSection').style.display = 'block';
       document.getElementById('submitBtn').disabled = false;
-      showRefusal();
-      return;
+      showRefusal(); return;
     }
 
     const p = JSON.parse(raw);
-
-    // Store for sharing
     currentScore = p.score;
     currentAssumption = p.assumption;
 
-    // Hide thinking, show results
     document.getElementById('thinkingState').classList.remove('active');
     document.getElementById('resultsSection').classList.add('active');
-
-    // Set echo
     document.getElementById('takeEchoText').textContent = '"' + take + '"';
     document.getElementById('takeEcho').style.animation = 'fadeUp 0.5s ease forwards';
-
     scrollTo(document.getElementById('resultsSection'));
 
-    // Stream blocks sequentially
-    await streamBlock(document.getElementById('block1Content'), p.situate, 300);
+    await streamBlock(document.getElementById('block1Content'), p.framing, 300);
 
-    // Blind spot — special treatment
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(r => setTimeout(r, 400));
     document.getElementById('block2').classList.add('streamed');
     document.getElementById('block2Statement').innerHTML = p.assumption + '<span class="stream-cursor"></span>';
     scrollTo(document.getElementById('block2'));
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(r => setTimeout(r, 800));
     document.getElementById('block2Statement').querySelector('.stream-cursor')?.remove();
-    await streamBlock(document.getElementById('block2Content'), p.assumption_detail, 200);
 
     await streamBlock(document.getElementById('block3Content'), p.counter, 600);
-    await streamBlock(document.getElementById('block4Content'), p.beneath, 500);
     await streamBlock(document.getElementById('block5Content'), p.reframe, 500);
 
-    // Score block
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise(r => setTimeout(r, 600));
     document.getElementById('block6').classList.add('streamed');
     scrollTo(document.getElementById('block6'));
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(r => setTimeout(r, 300));
 
-    // Animate score number counting up
     let n = 0;
     const target = p.score;
     const scoreEl = document.getElementById('scoreNum');
     const countInterval = setInterval(() => {
       n = Math.min(n + 2, target);
       scoreEl.textContent = n;
-      if(n >= target) {
+      if(n >= target){
         clearInterval(countInterval);
         document.getElementById('scoreBar').style.width = target + '%';
         document.getElementById('scoreElevate').textContent = p.score_note;
       }
     }, 22);
 
-    // Share data
-    document.getElementById('shareTake').textContent = '"' + take + '"';
+    document.getElementById('shareTake').textContent       = '"' + take + '"';
     document.getElementById('shareAssumption').textContent = p.assumption;
-    document.getElementById('shareScore').textContent = p.score;
+    document.getElementById('shareScore').textContent      = p.score;
 
-    // Steal / Your take sharpened
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(r => setTimeout(r, 800));
     document.getElementById('stealBlock').classList.add('streamed');
     const stealText = p.steal;
     document.getElementById('stealText').textContent = stealText;
     document.getElementById('stealCharCount').textContent = stealText.length + ' chars';
-    // Build X share URL
     const xText = encodeURIComponent(stealText + '\n\n— reframed on axiom.so/reframe');
     document.getElementById('xShareBtn').href = `https://x.com/intent/tweet?text=${xText}`;
     scrollTo(document.getElementById('stealBlock'));
 
-    // Actions
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(r => setTimeout(r, 400));
     document.getElementById('resultActions').classList.add('streamed');
 
-    // WHERE THIS LEADS — render after a breath
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(r => setTimeout(r, 800));
     renderLeads(p);
 
-  } catch(e) {
+  } catch(e){
     document.getElementById('thinkingState').classList.remove('active');
     document.getElementById('inputSection').style.display = 'block';
     document.getElementById('submitBtn').disabled = false;
-    // If JSON parse failed it's likely a refusal
-    if(e instanceof SyntaxError){
-      showRefusal();
-    } else {
-      showError();
-    }
+    if(e instanceof SyntaxError){ showRefusal(); } else { showError(); }
     console.error(e);
   }
 }
