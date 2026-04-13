@@ -509,7 +509,16 @@ nav{
   margin-left:30px;
 }
 
-/* Block 5 — Reframe: full accent background */
+/* Block 1 — Steelman: subtle warm left accent, italic */
+.result-block.steelman .block-content{
+  border-left:3px solid var(--faint);
+  padding-left:24px;
+  margin-left:30px;
+  font-style:italic;
+  color:var(--ink3);
+}
+
+/* Block 4 — Reframe (Your take sharpened): full dark background */
 .result-block.reframe{
   background:var(--ink);
   padding:40px 36px;
@@ -822,6 +831,20 @@ nav{
 }
 .share-copy-btn:hover{opacity:0.85}
 
+/* Leads actions */
+.leads-actions{
+  display:flex;
+  gap:12px;
+  margin-top:48px;
+  padding-top:32px;
+  border-top:1px solid var(--rule);
+  opacity:0;
+  transform:translateY(16px);
+}
+.leads-actions.streamed{
+  animation:fadeUp 0.5s ease forwards;
+}
+
 /* Streaming cursor */
 .stream-cursor{
   display:inline-block;
@@ -1119,11 +1142,8 @@ nav{
   display:flex;align-items:center;gap:8px;
 }
 
-.sit-label::before{
-  content:'';
-  display:block;width:20px;height:1px;
-  background:var(--mid);
-}
+/* sit-label dashes now in HTML as &mdash; */
+.sit-label::before{ content:none; }
 
 .sit-prompt{
   font-family:var(--serif);
@@ -1385,25 +1405,21 @@ nav{padding:16px var(--px)}
       <span class="think-line-num">—</span>
       Reading your take carefully...
     </div>
-    <div class="think-line" data-delay="600">
+    <div class="think-line" data-delay="700">
       <span class="think-line-num">—</span>
-      Figuring out what you're actually claiming...
+      Tracing where this idea comes from...
     </div>
-    <div class="think-line" data-delay="1400">
+    <div class="think-line" data-delay="1600">
       <span class="think-line-num">—</span>
-      Finding what you're implicitly assuming...
+      Building the strongest case for you...
     </div>
-    <div class="think-line" data-delay="2400">
+    <div class="think-line" data-delay="2700">
       <span class="think-line-num">—</span>
-      Finding the smartest person who'd disagree with you...
+      Finding the assumption underneath this...
     </div>
-    <div class="think-line" data-delay="3600">
+    <div class="think-line" data-delay="3900">
       <span class="think-line-num">—</span>
-      Mapping who benefits from this view...
-    </div>
-    <div class="think-line" data-delay="4800">
-      <span class="think-line-num">—</span>
-      Tightening the argument...
+      Finding your sharpest critic...
     </div>
   </div>
 </div>
@@ -1417,84 +1433,64 @@ nav{padding:16px var(--px)}
     <div class="take-echo-text" id="takeEchoText"></div>
   </div>
 
-  <!-- Block 1: Situate -->
-  <div class="result-block" id="block1">
+  <!-- Block 0: Where this comes from -->
+  <div class="result-block" id="block0">
     <div class="block-header">
       <span class="block-num">01</span>
-      <span class="block-title">Let me situate this</span>
+      <span class="block-title">Where this comes from</span>
+    </div>
+    <div class="block-content" id="block0Content"></div>
+  </div>
+
+  <!-- Block 1: Strongest case for this (steelman) -->
+  <div class="result-block steelman" id="block1">
+    <div class="block-header">
+      <span class="block-num">02</span>
+      <span class="block-title">The strongest case for your position</span>
     </div>
     <div class="block-content" id="block1Content"></div>
   </div>
 
-  <!-- Block 2: Blind Spot — THE CENTREPIECE -->
+  <!-- Block 2: Assumption — THE CENTREPIECE -->
   <div class="result-block blind-spot" id="block2">
     <div class="block-header">
-      <span class="block-num">02</span>
-      <span class="block-title">Here's what you're implicitly assuming</span>
+      <span class="block-num">03</span>
+      <span class="block-title">You're assuming that —</span>
     </div>
     <div class="blind-spot-statement" id="block2Statement"></div>
-    <div class="block-content" id="block2Content" style="margin-top:16px"></div>
   </div>
 
-  <!-- Block 3: Counter -->
+  <!-- Block 3: Strongest critic -->
   <div class="result-block counter" id="block3">
     <div class="block-header">
-      <span class="block-num">03</span>
-      <span class="block-title">The smartest person who disagrees with you would say this</span>
+      <span class="block-num">04</span>
+      <span class="block-title">Your strongest critic would say</span>
     </div>
     <div class="block-content" id="block3Content"></div>
   </div>
 
-  <!-- Block 4: Who benefits -->
-  <div class="result-block" id="block4">
-    <div class="block-header">
-      <span class="block-num">04</span>
-      <span class="block-title">What's actually going on beneath this debate</span>
-    </div>
-    <div class="block-content" id="block4Content"></div>
-  </div>
-
-  <!-- Block 5: Reframe — full dark background -->
+  <!-- Block 4: Your take sharpened — full dark background -->
   <div class="result-block reframe" id="block5">
     <div class="block-header">
       <span class="block-num" style="color:rgba(255,255,255,0.25)">05</span>
-      <span class="block-title" style="color:rgba(255,255,255,0.5)">If you want to hold this seriously — here's how I'd tighten it</span>
+      <span class="block-title" style="color:rgba(255,255,255,0.5)">Your take, sharpened</span>
     </div>
     <div class="block-content" id="block5Content"></div>
   </div>
 
-  <!-- Block 6: Score -->
+  <!-- Score block -->
   <div class="result-block score-block" id="block6">
     <div class="block-header">
       <span class="block-num">06</span>
-      <span class="block-title">Where this leaves you</span>
+      <span class="block-title">Defensibility score</span>
     </div>
     <div class="score-display">
       <div class="score-num" id="scoreNum">—</div>
-      <div class="score-label">Confidence score / 100</div>
+      <div class="score-label">How well this holds up / 100</div>
       <div class="score-bar-track">
         <div class="score-bar-fill" id="scoreBar"></div>
       </div>
       <div class="score-elevate" id="scoreElevate"></div>
-    </div>
-  </div>
-
-  <!-- Steal This Argument -->
-  <!-- Your reframe — ready to post -->
-  <div class="steal-block" id="stealBlock">
-    <div class="steal-label">
-      <div class="steal-label-left">Your take, sharpened</div>
-      <span id="stealCharCount"></span>
-    </div>
-    <div class="steal-text" id="stealText"></div>
-    <div class="steal-actions">
-      <a class="x-share-btn" id="xShareBtn" href="#" target="_blank" rel="noopener noreferrer">
-        <svg class="x-logo" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
-        Post on X
-      </a>
-      <button class="steal-copy-btn" id="stealCopyBtn" onclick="copySteal()">Copy text</button>
     </div>
   </div>
 
@@ -1514,27 +1510,34 @@ nav{padding:16px var(--px)}
     <div class="leads-title">Where this leads</div>
   </div>
 
-  <p class="leads-subtitle">
-    If we were discussing this in person, I'd probably send you these.<br>
-    <em>Pick one. That's enough.</em>
-  </p>
+  <p class="leads-subtitle">Three things worth your time.<br><em>Pick one. That's enough.</em></p>
 
-  <div class="pick-one">→ One is enough to shift your thinking</div>
-
-  <div class="lens-grid" id="lensSteps">
-    <!-- Populated by JS -->
+  <!-- Carousel -->
+  <div class="carousel-wrap" id="carouselWrap">
+    <button class="carousel-btn carousel-prev" id="carouselPrev" onclick="carouselMove(-1)" aria-label="Previous">&#8592;</button>
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+    <button class="carousel-btn carousel-next" id="carouselNext" onclick="carouselMove(1)" aria-label="Next">&#8594;</button>
   </div>
+  <div class="carousel-dots" id="carouselDots"></div>
 
-  <!-- Sit with this -->
+  <!-- Sit with this — after carousel -->
   <div class="sit-block" id="sitBlock">
-    <div class="sit-label">Sit with this</div>
+    <div class="sit-label">——&nbsp;&nbsp;SIT WITH THIS</div>
     <div class="sit-prompt" id="sitPrompt"></div>
   </div>
 
-  <!-- Closing line -->
+  <!-- Closing line / sassy remark -->
   <div class="closing-line" id="closingLine">
     <div class="closing-text" id="closingText"></div>
     <span class="closing-axiom">— Reframe by Axiom</span>
+  </div>
+
+  <!-- Action buttons live here (after sassy closer) -->
+  <div class="leads-actions" id="leadsActions">
+    <button class="action-btn action-secondary" onclick="resetTool()">Test another take</button>
+    <button class="action-btn action-primary" onclick="openShare()">Share this result</button>
   </div>
 
   <!-- Community slot — v2 placeholder -->
@@ -1821,32 +1824,48 @@ ${hinglishNote}
 ${confidenceNote}
 
 Take: "${take}"
-${ctx ? `About the person / their context: "${ctx}"` : ''}
-${src && !src.match(/https?:\/\//i) ? `What triggered this take: "${src}"` : ''}
-${urlContext ? `Source article: ${urlContext}` : ''}
-Confidence level: ${selectedConf}
+${ctx ? `Context: "${ctx}"` : ''}
+${src && !src.match(/https?:\/\//i) ? `Trigger: "${src}"` : ''}
+${urlContext ? `Source: ${urlContext}` : ''}
+Confidence: ${selectedConf}
 
-Respond ONLY with valid JSON — no markdown, no preamble:
+Output rules:
+- origins: 2-3 warm sentences on the intellectual roots. Start "This view has roots in..."
+- steelman: 2-3 sentences making the strongest case FOR this take. Start "The case for this is..."
+- assumption: ONE sentence naming the core logical gap. Start "You're assuming that..."
+- counter: 2-3 sentences. Name a specific thinker or school who would push back. Make it land.
+- reframe: 2 sentences. The defensible upgrade. Match their register.
+- score: integer 28-71
+- score_note: one sentence on what raises the score
+- sit_with_this: one question starting with "If" or "What if" — specific to this take
+- steal: their take at its sharpest, max 200 chars, no hashtags, no em-dashes
+- closing_line: one dry witty line specific to this take — the kind someone screenshots
+- lenses: exactly 3 items — deep cut (essay), counter (essay), unexpected (video/game/sim/doc)
+  Each lens: step, type, anchor (short), title (real specific title), source, format, tag, tag_color, why (one sentence)
+  No url field.
+
+Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 {
-  "framing": "One paragraph under 55 words. Situates the view AND surfaces the core unstated assumption in the same breath. Starts with 'This is a view that...' Warm, honest.",
-  "assumption": "The single unstated assumption as ONE sentence starting with 'You\'re assuming that...' — specific not generic. This is the centrepiece.",
-  "counter": "The single strongest argument against this take. 2-3 sentences. Steel-manned. Must make the reader genuinely pause. No 'however' or 'on the other hand'.",
-  "reframe": "The defensible version of this take. 2 sentences. Feels like an upgrade not a refutation. Match their voice and register.",
-  "score": a number between 28 and 71,
-  "score_note": "One concrete sentence on what would specifically raise this score.",
-  "sit_with_this": "One reflective question starting with If or What if. Tailored to their specific blind spot.",
-  "steal": "Their take rewritten in their voice. Max 240 chars. No hashtags. No em-dashes. Confident. Ends strong.",
-  "closing_line": "One dry warm witty line closing the experience. Specific to this take.",
+  "origins": "",
+  "steelman": "",
+  "assumption": "",
+  "counter": "",
+  "reframe": "",
+  "score": 47,
+  "score_note": "",
+  "sit_with_this": "",
+  "steal": "",
+  "closing_line": "",
   "lenses": [
-    {"step":"Start here","type":"The Deep Cut","anchor":"If you only read one thing on this...","title":"real title of a specific essay or article","source":"publication or author","format":"Essay","tag":"Foundation","tag_color":"#1B3F6B","why":"one sentence connecting to this take"},
-    {"step":"Challenge yourself","type":"The Counter","anchor":"The best serious argument against you...","title":"real title of a piece arguing the opposing position","source":"publication or author","format":"Essay","tag":"Flip Side","tag_color":"#C24B2A","why":"one sentence on why for this take"},
-    {"step":"Expand your thinking","type":"The Unexpected","anchor":"Same pattern, completely different world...","title":"real title from a different domain","source":"publication or author","format":"Essay","tag":"Zoom Out","tag_color":"#5C3A8C","why":"one sentence connecting to this take"}
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#1B3F6B","why":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#C24B2A","why":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":""}
   ]
 }`;
 
     const res = await fetch('/api/reframe', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:2000, messages:[{ role:'user', content: prompt }] })
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:3500, messages:[{ role:'user', content: prompt }] })
     });
 
     const data = await res.json();
@@ -1869,19 +1888,40 @@ Respond ONLY with valid JSON — no markdown, no preamble:
     document.getElementById('takeEcho').style.animation = 'fadeUp 0.5s ease forwards';
     scrollTo(document.getElementById('resultsSection'));
 
-    await streamBlock(document.getElementById('block1Content'), p.framing, 300);
+    // Block 0 — Where this comes from
+    await streamBlock(document.getElementById('block0Content'), p.origins, 300);
 
-    await new Promise(r => setTimeout(r, 400));
+    // Block 1 — Strongest case for this (steelman)
+    await streamBlock(document.getElementById('block1Content'), p.steelman, 400);
+
+    // Block 2 — Assumption centrepiece
+    await new Promise(r => setTimeout(r, 500));
     document.getElementById('block2').classList.add('streamed');
-    document.getElementById('block2Statement').innerHTML = p.assumption + '<span class="stream-cursor"></span>';
+    const assumptionEl = document.getElementById('block2Statement');
+    assumptionEl.innerHTML = '';
     scrollTo(document.getElementById('block2'));
-    await new Promise(r => setTimeout(r, 800));
-    document.getElementById('block2Statement').querySelector('.stream-cursor')?.remove();
+    // Reveal assumption word by word for dramatic effect
+    const aWords = p.assumption.split(' ');
+    for(let wi = 0; wi < aWords.length; wi++){
+      await new Promise(r => setTimeout(r, 55));
+      assumptionEl.textContent += (wi === 0 ? '' : ' ') + aWords[wi];
+    }
 
+    // Block 3 — Strongest critic
     await streamBlock(document.getElementById('block3Content'), p.counter, 600);
+
+    // Block 4 — Your take sharpened
     await streamBlock(document.getElementById('block5Content'), p.reframe, 500);
 
+    // Sit with this — right after reframe, before score
     await new Promise(r => setTimeout(r, 600));
+    const sitBlock = document.getElementById('sitBlock');
+    sitBlock.classList.add('revealed');
+    document.getElementById('sitPrompt').textContent = p.sit_with_this;
+    scrollTo(sitBlock);
+
+    // Score
+    await new Promise(r => setTimeout(r, 800));
     document.getElementById('block6').classList.add('streamed');
     scrollTo(document.getElementById('block6'));
     await new Promise(r => setTimeout(r, 300));
@@ -1903,26 +1943,21 @@ Respond ONLY with valid JSON — no markdown, no preamble:
     document.getElementById('shareAssumption').textContent = p.assumption;
     document.getElementById('shareScore').textContent      = p.score;
 
-    await new Promise(r => setTimeout(r, 800));
-    document.getElementById('stealBlock').classList.add('streamed');
-    const stealText = p.steal;
-    document.getElementById('stealText').textContent = stealText;
-    document.getElementById('stealCharCount').textContent = stealText.length + ' chars';
-    const xText = encodeURIComponent(stealText + '\n\n— reframed on axiom.so/reframe');
-    document.getElementById('xShareBtn').href = `https://x.com/intent/tweet?text=${xText}`;
-    scrollTo(document.getElementById('stealBlock'));
-
-    await new Promise(r => setTimeout(r, 400));
-    document.getElementById('resultActions').classList.add('streamed');
-
-    await new Promise(r => setTimeout(r, 800));
+    // Render carousel + closing line
+    await new Promise(r => setTimeout(r, 1000));
     renderLeads(p);
 
   } catch(e){
     document.getElementById('thinkingState').classList.remove('active');
     document.getElementById('inputSection').style.display = 'block';
     document.getElementById('submitBtn').disabled = false;
-    if(e instanceof SyntaxError){ showRefusal(); } else { showError(); }
+    // SyntaxError = JSON truncated or malformed — not a content refusal
+    // Show a retry notice rather than a refusal message
+    if(e instanceof SyntaxError){
+      showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Something went wrong</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">The response got cut off. Your take is still there — try again and it should work.</div>`, 'neutral');
+    } else {
+      showError();
+    }
     console.error(e);
   }
 }
@@ -2017,16 +2052,26 @@ function renderLeads(p){
 
   const section = document.getElementById('leadsSection');
   section.classList.add('active');
-  scrollTo(section);
 
-  const container = document.getElementById('lensSteps');
-  container.innerHTML = '';
+  const track = document.getElementById('carouselTrack');
+  const dotsEl = document.getElementById('carouselDots');
+  track.innerHTML = '';
+  dotsEl.innerHTML = '';
+  carouselIndex = 0;
+  carouselTotal = p.lenses.length;
 
+  const interactiveFormats = ['Video','Game','Simulation','Interactive','Documentary'];
   const themes = [0,1,2,3,4,5];
 
+  // Measure container width to set card size
+  const outerWidth = Math.max(280, document.getElementById('carouselWrap').offsetWidth - 100);
+  const cardWidth = Math.min(outerWidth, 320);
+
   p.lenses.forEach((lens, i) => {
+    const isInteractive = interactiveFormats.includes(lens.format);
     const card = document.createElement('a');
-    card.className = `lens-card theme-${themes[i] || i}`;
+    card.className = `lens-card theme-${themes[i % 6]}${isInteractive ? ' is-interactive' : ''}`;
+    card.style.cssText = `width:${cardWidth}px;min-width:${cardWidth}px;margin-right:16px;`;
     card.href = '#';
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
@@ -2037,13 +2082,21 @@ function renderLeads(p){
 
     const logoHtml = faviconUrl
       ? `<img src="${faviconUrl}" alt="${lens.source}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      + `<span class="lens-source-logo-fallback" style="display:none">${initials}</span>`
+        + `<span class="lens-source-logo-fallback" style="display:none">${initials}</span>`
       : `<span class="lens-source-logo-fallback">${initials}</span>`;
 
+    // Interactive cards get a bigger thumb + play icon overlay
+    const thumbExtra = isInteractive
+      ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+           <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px;">▶</div>
+         </div>`
+      : '';
+
     card.innerHTML = `
-      <div class="lens-thumb">
+      <div class="lens-thumb" style="${isInteractive ? 'height:150px' : ''}">
         <img class="lens-thumb-img" src="${thumbUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
         <div class="lens-thumb-overlay"></div>
+        ${thumbExtra}
         <div class="lens-source-logo">${logoHtml}</div>
         <span class="lens-format-badge">${lens.format}</span>
         <span class="lens-step-label">${lens.step}</span>
@@ -2058,26 +2111,44 @@ function renderLeads(p){
         <span class="lens-tag-pill">${lens.tag}</span>
       </div>`;
 
-    container.appendChild(card);
+    track.appendChild(card);
 
-    setTimeout(() => {
-      card.classList.add('revealed');
-    }, i * 140);
+    // Dot
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `Go to card ${i+1}`);
+    dot.onclick = () => { carouselIndex = i - 1; carouselMove(1); };
+    dotsEl.appendChild(dot);
   });
 
-  // Sit with this
-  setTimeout(() => {
-    const sitBlock = document.getElementById('sitBlock');
-    sitBlock.classList.add('revealed');
-    document.getElementById('sitPrompt').textContent = p.sit_with_this;
-  }, p.lenses.length * 140 + 400);
+  // Init carousel position after paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      updateCarousel();
+      scrollTo(section);
+    });
+  });
 
-  // Closing line
+  // Sit with this — reveals inside leads section
+  setTimeout(() => {
+    const sit = document.getElementById('sitBlock');
+    sit.classList.add('revealed');
+    scrollTo(sit);
+  }, 600);
+
+  // Sassy closing line
   setTimeout(() => {
     const cl = document.getElementById('closingLine');
     cl.classList.add('revealed');
     document.getElementById('closingText').textContent = p.closing_line;
-  }, p.lenses.length * 140 + 900);
+    scrollTo(cl);
+  }, 1400);
+
+  // Leads action buttons
+  setTimeout(() => {
+    const la = document.getElementById('leadsActions');
+    if(la) la.classList.add('streamed');
+  }, 1800);
 }
 
 function copySteal(){
@@ -2115,11 +2186,18 @@ function resetTool(){
     b.style.opacity = '0';
     b.style.transform = 'translateY(16px)';
   });
-  document.getElementById('stealBlock').classList.remove('streamed');
-  document.getElementById('resultActions').classList.remove('streamed');
+  ['block0Content','block1Content','block2Statement','block3Content','block5Content'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = '';
+  });
+  document.getElementById('resultActions') && document.getElementById('resultActions').classList.remove('streamed');
+  const la = document.getElementById('leadsActions');
+  if(la) la.classList.remove('streamed');
   document.getElementById('scoreBar').style.width = '0';
   document.getElementById('scoreNum').textContent = '—';
-  document.getElementById('lensSteps').innerHTML = '';
+  document.getElementById('carouselTrack').innerHTML = '';
+  document.getElementById('carouselDots').innerHTML = '';
+  carouselIndex = 0; carouselTotal = 0;
   document.getElementById('sitBlock').classList.remove('revealed');
   document.getElementById('closingLine').classList.remove('revealed');
   document.getElementById('sitBlock').style.opacity = '0';
