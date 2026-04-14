@@ -2154,14 +2154,11 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     document.getElementById('thinkingState').classList.remove('active');
     document.getElementById('inputSection').style.display = 'block';
     document.getElementById('submitBtn').disabled = false;
-    // SyntaxError = JSON truncated or malformed — not a content refusal
-    // Show a retry notice rather than a refusal message
-    if(e instanceof SyntaxError){
-      showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Something went wrong</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">The response got cut off. Your take is still there — try again and it should work.</div>`, 'neutral');
-    } else {
-      showError();
-    }
-    console.error(e);
+    console.error('Reframe error:', e, e.stack);
+    // Show the actual error to help debug
+    const errType = e.constructor.name || 'Unknown';
+    const errMsg = e.message || String(e);
+    showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">${errType}</div><div style="font-size:13px;font-family:var(--mono);color:var(--ink3);line-height:1.6;word-break:break-all">${errMsg}</div>`, 'neutral');
   }
 }
 
