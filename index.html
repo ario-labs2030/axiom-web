@@ -942,8 +942,7 @@ nav{
   max-width:760px;
   margin:0 auto;
   padding:0 48px 80px;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.2s forwards;
+  opacity:1;
 }
 
 .leads-section.active{display:block}
@@ -1822,7 +1821,11 @@ function streamBlock(el, text, delay){
   return new Promise(resolve => {
     setTimeout(() => {
       el.innerHTML = '';
-      el.closest('.result-block').classList.add('streamed');
+      const _blk = el.closest('.result-block');
+      _blk.style.opacity = '';
+      _blk.style.transform = '';
+      void _blk.offsetWidth;
+      _blk.classList.add('streamed');
       const cursor = document.createElement('span');
       cursor.className = 'stream-cursor';
       el.appendChild(cursor);
@@ -2095,7 +2098,9 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 
     // Block 2 — Assumption centrepiece
     await new Promise(r => setTimeout(r, 500));
-    document.getElementById('block2').classList.add('streamed');
+    const _b2 = document.getElementById('block2');
+    _b2.style.opacity = ''; _b2.style.transform = ''; void _b2.offsetWidth;
+    _b2.classList.add('streamed');
     const assumptionEl = document.getElementById('block2Statement');
     assumptionEl.innerHTML = '';
     scrollTo(document.getElementById('block2'));
@@ -2124,7 +2129,9 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 
     // Score
     await new Promise(r => setTimeout(r, 800));
-    document.getElementById('block6').classList.add('streamed');
+    const _b6 = document.getElementById('block6');
+    _b6.style.opacity = ''; _b6.style.transform = ''; void _b6.offsetWidth;
+    _b6.classList.add('streamed');
     scrollTo(document.getElementById('block6'));
     await new Promise(r => setTimeout(r, 300));
 
@@ -2144,6 +2151,10 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     document.getElementById('shareTake').textContent       = '"' + take + '"';
     document.getElementById('shareAssumption').textContent = p.assumption;
     document.getElementById('shareScore').textContent      = p.score;
+
+    // Show result action buttons
+    const _ra = document.getElementById('resultActions');
+    if(_ra){ _ra.style.opacity=''; void _ra.offsetWidth; _ra.classList.add('streamed'); }
 
     // Render carousel + closing line
     await new Promise(r => setTimeout(r, 1000));
@@ -2253,7 +2264,15 @@ function renderLeads(p){
   if(!p.lenses || !p.lenses.length) return;
 
   const section = document.getElementById('leadsSection');
+  section.style.opacity = '';
+  section.style.animation = '';
+  section.style.transition = '';
   section.classList.add('active');
+  section.style.opacity = '0';
+  requestAnimationFrame(() => {
+    section.style.transition = 'opacity 0.5s ease';
+    section.style.opacity = '1';
+  });
 
   const track = document.getElementById('carouselTrack');
   const dotsEl = document.getElementById('carouselDots');
@@ -2336,6 +2355,9 @@ function renderLeads(p){
   // Sit with this — reveals inside leads section
   setTimeout(() => {
     const sit = document.getElementById('sitBlock');
+    sit.style.opacity = '';
+    sit.style.animation = '';
+    void sit.offsetWidth;
     sit.classList.add('revealed');
     scrollTo(sit);
   }, 600);
@@ -2343,18 +2365,22 @@ function renderLeads(p){
   // Sassy closing line
   setTimeout(() => {
     const cl = document.getElementById('closingLine');
-    cl.classList.add('revealed');
+    cl.style.opacity = ''; cl.style.animation = ''; void cl.offsetWidth;
     document.getElementById('closingText').textContent = p.closing_line;
     // Add take echo at top of closing block
     const closingEcho = document.getElementById('closingTakeEcho');
     if(closingEcho) closingEcho.textContent = currentTake ? '"' + currentTake + '"' : '';
+    cl.classList.add('revealed');
     scrollTo(cl);
   }, 1400);
 
   // Leads action buttons
   setTimeout(() => {
     const la = document.getElementById('leadsActions');
-    if(la) la.classList.add('streamed');
+    if(la){
+      la.style.opacity = ''; la.style.transform = ''; void la.offsetWidth;
+      la.classList.add('streamed');
+    }
   }, 1800);
 }
 
