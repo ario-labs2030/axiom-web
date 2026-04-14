@@ -750,12 +750,50 @@ nav{
   align-items:center;
   justify-content:space-between;
   margin-top:auto;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:12px;
+  border-top:1px solid rgba(128,128,128,0.15);
   margin-bottom:14px;
 }
-.share-attr-reframe{height:16px;width:auto;opacity:0.6}
-.share-attr-axiom{height:18px;width:auto;opacity:0.55;filter:invert(1)}
+.share-attr-left,.share-attr-right{display:flex;align-items:center}
+.share-attr-reframe{height:16px;width:auto;opacity:0.65}
+.share-attr-axiom{height:20px;width:auto;opacity:0.65}
+/* White versions for dark (ink) slides */
+.share-card.mode-ink .share-attr-light{display:flex!important}
+.share-card.mode-ink .share-attr-dark{display:none!important}
+.share-card.mode-ink .share-attr-axiom-text,.share-card.mode-ink .share-attr-reframe-text{display:none!important}
+/* Dark versions for off-white slides */
+.share-card.mode-off .share-attr-dark{display:flex!important}
+.share-card.mode-off .share-attr-light{display:none!important}
+.share-card.mode-off .share-attr-axiom-text,.share-card.mode-off .share-attr-reframe-text{display:none!important}
+/* Text versions for orange slides */
+.share-card.mode-accent .share-attr-light,.share-card.mode-accent .share-attr-dark{display:none!important}
+.share-card.mode-accent .share-attr-axiom-text{
+  display:inline!important;
+  font-family:var(--serif);font-size:16px;font-weight:400;
+  color:rgba(255,255,255,0.85);letter-spacing:0.01em;
+}
+.share-card.mode-accent .share-attr-reframe-text{
+  display:inline!important;
+  font-family:var(--serif);font-size:14px;font-style:italic;
+  color:rgba(255,255,255,0.85);
+}
+.share-attr-reframe-text em{font-style:italic}
+
+/* Take echo on each slide */
+.share-slide-take{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:12px;
+  line-height:1.5;
+  margin-bottom:14px;
+  padding-bottom:12px;
+}
+/* ink slide take */
+.share-slide .share-slide-take{ color:rgba(255,255,255,0.35); border-bottom:1px solid rgba(255,255,255,0.1); }
+/* off-white slide take */
+.ss-off-take{ color:rgba(10,10,8,0.35)!important; border-bottom:1px solid rgba(10,10,8,0.1)!important; }
+/* orange slide take */
+.ss-accent-take{ color:rgba(255,255,255,0.45)!important; border-bottom:1px solid rgba(255,255,255,0.2)!important; }
 
 /* ── SHARE MODAL ── */
 .share-modal{
@@ -1735,6 +1773,7 @@ nav{padding:16px var(--px)}
 
         <!-- SLIDE 0: Assumption + Score — dark ink -->
         <div class="share-slide ss-ink" data-slide="0">
+          <div class="share-slide-take" id="shareTake0"></div>
           <div class="share-assumption">You're assuming —</div>
           <div class="share-assumption-text" id="shareAssumption"></div>
           <div class="share-score-row">
@@ -1745,36 +1784,42 @@ nav{padding:16px var(--px)}
 
         <!-- SLIDE 1: Origins — off-white -->
         <div class="share-slide ss-off" data-slide="1">
+          <div class="share-slide-take ss-off-take" id="shareTake1"></div>
           <div class="share-assumption">Where this comes from —</div>
           <div class="share-assumption-text" id="shareOrigins"></div>
         </div>
 
         <!-- SLIDE 2: Steelman — dark ink -->
         <div class="share-slide ss-ink" data-slide="2">
+          <div class="share-slide-take" id="shareTake2"></div>
           <div class="share-assumption">The strongest case for this —</div>
           <div class="share-assumption-text" id="shareSteelman"></div>
         </div>
 
         <!-- SLIDE 3: Counter — accent orange -->
         <div class="share-slide ss-accent" data-slide="3">
+          <div class="share-slide-take ss-accent-take" id="shareTake3"></div>
           <div class="share-assumption">Your strongest critic says —</div>
           <div class="share-assumption-text" id="shareCounter"></div>
         </div>
 
         <!-- SLIDE 4: Reframe — off-white -->
         <div class="share-slide ss-off" data-slide="4">
+          <div class="share-slide-take ss-off-take" id="shareTake4"></div>
           <div class="share-assumption">Your take, sharpened —</div>
           <div class="share-assumption-text" id="shareReframe"></div>
         </div>
 
         <!-- SLIDE 5: Sit with this — accent orange -->
         <div class="share-slide ss-accent" data-slide="5">
+          <div class="share-slide-take ss-accent-take" id="shareTake5"></div>
           <div class="share-assumption">Sit with this —</div>
           <div class="share-assumption-text" id="shareSitWith"></div>
         </div>
 
         <!-- SLIDE 6: Sassy closer — dark ink -->
         <div class="share-slide ss-ink" data-slide="6">
+          <div class="share-slide-take" id="shareTake6"></div>
           <div class="share-assumption">Reframe says —</div>
           <div class="share-assumption-text" id="shareClosingLine"></div>
         </div>
@@ -1782,10 +1827,19 @@ nav{padding:16px var(--px)}
       </div>
     </div>
 
-    <!-- Attribution: reframe logo left, axiom logo right -->
-    <div class="share-attribution-row">
-      <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-axiom-light.svg" alt="Reframe by Axiom" class="share-attr-reframe" onerror="this.style.display='none'">
-      <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-dark.svg" alt="Axiom" class="share-attr-axiom" onerror="this.style.display='none'">
+    <!-- Attribution: Axiom LEFT, Reframe RIGHT -->
+    <!-- For ink/off slides: real logos. For accent (orange) slides: white text versions shown via JS class -->
+    <div class="share-attribution-row" id="shareAttrRow">
+      <div class="share-attr-left">
+        <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-light.svg" alt="Axiom" class="share-attr-axiom share-attr-light" onerror="this.style.display='none'">
+        <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-dark.svg" alt="Axiom" class="share-attr-axiom share-attr-dark" style="display:none" onerror="this.style.display='none'">
+        <span class="share-attr-axiom-text" style="display:none">Axiom</span>
+      </div>
+      <div class="share-attr-right">
+        <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-axiom-light.svg" alt="Reframe by Axiom" class="share-attr-reframe share-attr-light" onerror="this.style.display='none'">
+        <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-axiom-dark.svg" alt="Reframe by Axiom" class="share-attr-reframe share-attr-dark" style="display:none" onerror="this.style.display='none'">
+        <span class="share-attr-reframe-text" style="display:none"><em>Reframe</em> by Axiom</span>
+      </div>
     </div>
 
     <!-- Share actions -->
@@ -2457,17 +2511,22 @@ function copySteal(){
 
 // ── SHARE ──
 function openShare(){
-  // Populate each slide from the rendered results
   const g = id => document.getElementById(id)?.textContent || '';
   const s = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  // Populate content
   s('shareOrigins',     g('block0Content'));
   s('shareSteelman',    g('block1Content'));
   s('shareCounter',     g('block3Content'));
   s('shareReframe',     g('block5Content'));
   s('shareSitWith',     g('sitPrompt'));
   s('shareClosingLine', g('closingText'));
-  // shareAssumption and shareScore are already set during run
-  // Init slide nav
+  // Populate take echo on every slide
+  const takeStr = currentTake ? '"' + currentTake + '"' : '';
+  for(let i = 0; i < 7; i++){
+    const el = document.getElementById('shareTake' + i);
+    if(el) el.textContent = takeStr;
+  }
+  // shareAssumption and shareScore already set during run
   initShareSlides();
   document.getElementById('shareModal').classList.add('open');
 }
@@ -2573,8 +2632,14 @@ function initShareSlides(){
     dotsEl.appendChild(d);
   }
   shareSlideIndex = 0;
+  // Set initial mode
+  const card = document.querySelector('.share-card');
+  if(card){ card.classList.remove('mode-ink','mode-off','mode-accent'); card.classList.add('mode-ink'); }
   updateShareSlides();
 }
+
+// Slide index → color scheme: 0=ink,1=off,2=ink,3=accent,4=off,5=accent,6=ink
+const SLIDE_MODES = ['ink','off','ink','accent','off','accent','ink'];
 
 function updateShareSlides(){
   const track = document.getElementById('shareSlidesTrack');
@@ -2589,6 +2654,13 @@ function updateShareSlides(){
   const next = document.getElementById('shareNavNext');
   if(prev) prev.disabled = shareSlideIndex === 0;
   if(next) next.disabled = shareSlideIndex >= SHARE_TOTAL - 1;
+
+  // Switch card color mode for attribution logos
+  const card = document.querySelector('.share-card');
+  if(card){
+    card.classList.remove('mode-ink','mode-off','mode-accent');
+    card.classList.add('mode-' + (SLIDE_MODES[shareSlideIndex] || 'ink'));
+  }
 }
 
 function shareSlideMove(dir){
