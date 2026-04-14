@@ -2067,7 +2067,7 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 
     const res = await fetch('/api/reframe', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:3500, messages:[{ role:'user', content: prompt }] })
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:5000, messages:[{ role:'user', content: prompt }] })
     });
 
     const data = await res.json();
@@ -2117,16 +2117,6 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     // Block 4 — Your take sharpened
     await streamBlock(document.getElementById('block5Content'), p.reframe, 500);
 
-    // Sit with this — right after reframe, before score
-    await new Promise(r => setTimeout(r, 600));
-    const sitBlock = document.getElementById('sitBlock');
-    sitBlock.classList.add('revealed');
-    document.getElementById('sitPrompt').textContent = p.sit_with_this;
-    // Add take echo at top of sit block
-    const sitEcho = document.getElementById('sitTakeEcho');
-    if(sitEcho) sitEcho.textContent = take ? '"' + take + '"' : '';
-    scrollTo(sitBlock);
-
     // Score
     await new Promise(r => setTimeout(r, 800));
     const _b6 = document.getElementById('block6');
@@ -2148,7 +2138,7 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
       }
     }, 22);
 
-    document.getElementById('shareTake').textContent       = '"' + take + '"';
+    // shareTake populated in openShare()
     document.getElementById('shareAssumption').textContent = p.assumption;
     document.getElementById('shareScore').textContent      = p.score;
 
@@ -2358,6 +2348,9 @@ function renderLeads(p){
     sit.style.opacity = '';
     sit.style.animation = '';
     void sit.offsetWidth;
+    document.getElementById('sitPrompt').textContent = p.sit_with_this;
+    const sitEcho = document.getElementById('sitTakeEcho');
+    if(sitEcho) sitEcho.textContent = currentTake ? '"' + currentTake + '"' : '';
     sit.classList.add('revealed');
     scrollTo(sit);
   }, 600);
