@@ -725,6 +725,38 @@ nav{
 .action-secondary:hover{border-color:var(--ink)}
 
 
+/* ── SHARE SLIDE COLOR SCHEMES ── */
+/* ink (dark) */
+.ss-ink{background:var(--ink);}
+.ss-ink .share-assumption{color:var(--accent2)}
+.ss-ink .share-assumption-text{color:#F9F9F7}
+.ss-ink .share-score-row{border-color:rgba(255,255,255,0.1)}
+.ss-ink .share-score-num{color:#F9F9F7}
+.ss-ink .share-score-label{color:rgba(255,255,255,0.4)}
+
+/* accent (orange) */
+.ss-accent{background:var(--accent);}
+.ss-accent .share-assumption{color:rgba(255,255,255,0.65);letter-spacing:0.14em}
+.ss-accent .share-assumption-text{color:#fff}
+
+/* off-white */
+.ss-off{background:#F9F9F7;}
+.ss-off .share-assumption{color:var(--accent)}
+.ss-off .share-assumption-text{color:var(--ink);font-style:italic}
+
+/* Attribution row */
+.share-attribution-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:auto;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  margin-bottom:14px;
+}
+.share-attr-reframe{height:16px;width:auto;opacity:0.6}
+.share-attr-axiom{height:18px;width:auto;opacity:0.55;filter:invert(1)}
+
 /* ── SHARE MODAL ── */
 .share-modal{
   display:none;
@@ -737,7 +769,7 @@ nav{
 .share-modal.open{display:flex}
 
 .share-card{
-  background:var(--ink);
+  background:transparent;
   width:460px;
   max-width:92vw;
   padding:32px 36px 28px;
@@ -777,6 +809,7 @@ nav{
 .share-nav-btn:disabled{opacity:0.2;cursor:not-allowed}
 .share-nav-dots{
   display:flex;gap:6px;align-items:center;flex:1;
+  justify-content:center;
 }
 .share-nav-dot{
   width:20px;height:2px;
@@ -787,14 +820,15 @@ nav{
 .share-nav-dot.active{background:var(--accent);width:28px}
 
 /* Slides */
-.share-slides-viewport{overflow:hidden;flex:1;min-height:0;}
+.share-slides-viewport{overflow:hidden;flex:1;min-height:0;border-radius:0;}
 .share-slides-track{
   display:flex;
   transition:transform 0.3s cubic-bezier(.25,.8,.25,1);
 }
 .share-slide{
   min-width:100%;
-  padding:0;
+  padding:20px 24px;
+  border-radius:0;
 }
 
 /* Slide take echo (small italic take at top) */
@@ -879,8 +913,8 @@ nav{
   border-radius:2px;
   white-space:nowrap;
 }
-.share-dl-insta{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff}
-.share-dl-story{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15)}
+.share-dl-insta{background:var(--ink3);color:#fff;border:1px solid rgba(255,255,255,0.12)}
+.share-dl-story{background:var(--ink3);color:#fff;border:1px solid rgba(255,255,255,0.12)}
 .share-dl-x{background:#fff;color:#0A0A08}
 .share-dl-btn:hover{opacity:0.85}
 .share-icon{width:13px;height:13px;flex-shrink:0}
@@ -1217,6 +1251,7 @@ nav{
 .carousel-btn:disabled{opacity:0.2;cursor:not-allowed}
 .carousel-dots{
   display:flex;gap:6px;margin-bottom:32px;
+  justify-content:center;
 }
 .carousel-dot{
   width:20px;height:2px;
@@ -1637,12 +1672,6 @@ nav{padding:16px var(--px)}
     </div>
   </div>
 
-  <!-- Actions -->
-  <div class="result-actions" id="resultActions">
-    <button class="action-btn action-primary" onclick="openShare()">Share this result</button>
-    <button class="action-btn action-secondary" onclick="resetTool()">Test another take</button>
-    <button class="action-btn action-secondary" onclick="window.location.href='#'">Back to Axiom</button>
-  </div>
 
 </div>
 
@@ -1665,14 +1694,12 @@ nav{padding:16px var(--px)}
 
   <!-- Sit with this — after carousel -->
   <div class="sit-block" id="sitBlock">
-    <div class="sit-take-echo" id="sitTakeEcho"></div>
     <div class="sit-label">——&nbsp;&nbsp;SIT WITH THIS</div>
     <div class="sit-prompt" id="sitPrompt"></div>
   </div>
 
   <!-- Closing line / sassy remark -->
   <div class="closing-line" id="closingLine">
-    <div class="closing-take-echo" id="closingTakeEcho"></div>
     <div class="closing-text" id="closingText"></div>
     <span class="closing-axiom">— Reframe by Axiom</span>
   </div>
@@ -1695,7 +1722,7 @@ nav{padding:16px var(--px)}
   <div class="share-card">
     <button class="share-close" onclick="closeShare()">Close ×</button>
 
-    <!-- Arrow nav -->
+    <!-- Arrow nav — centered -->
     <div class="share-nav">
       <button class="share-nav-btn" id="shareNavPrev" onclick="shareSlideMove(-1)">&#8592;</button>
       <div class="share-nav-dots" id="shareNavDots"></div>
@@ -1706,9 +1733,8 @@ nav{padding:16px var(--px)}
     <div class="share-slides-viewport">
       <div class="share-slides-track" id="shareSlidesTrack">
 
-        <!-- SLIDE 1: Assumption -->
-        <div class="share-slide" data-slide="0">
-          <div class="share-slide-take" id="shareTake1"></div>
+        <!-- SLIDE 0: Assumption + Score — dark ink -->
+        <div class="share-slide ss-ink" data-slide="0">
           <div class="share-assumption">You're assuming —</div>
           <div class="share-assumption-text" id="shareAssumption"></div>
           <div class="share-score-row">
@@ -1717,16 +1743,38 @@ nav{padding:16px var(--px)}
           </div>
         </div>
 
-        <!-- SLIDE 2: Sit with this -->
-        <div class="share-slide" data-slide="1">
-          <div class="share-slide-take" id="shareTake2"></div>
+        <!-- SLIDE 1: Origins — off-white -->
+        <div class="share-slide ss-off" data-slide="1">
+          <div class="share-assumption">Where this comes from —</div>
+          <div class="share-assumption-text" id="shareOrigins"></div>
+        </div>
+
+        <!-- SLIDE 2: Steelman — dark ink -->
+        <div class="share-slide ss-ink" data-slide="2">
+          <div class="share-assumption">The strongest case for this —</div>
+          <div class="share-assumption-text" id="shareSteelman"></div>
+        </div>
+
+        <!-- SLIDE 3: Counter — accent orange -->
+        <div class="share-slide ss-accent" data-slide="3">
+          <div class="share-assumption">Your strongest critic says —</div>
+          <div class="share-assumption-text" id="shareCounter"></div>
+        </div>
+
+        <!-- SLIDE 4: Reframe — off-white -->
+        <div class="share-slide ss-off" data-slide="4">
+          <div class="share-assumption">Your take, sharpened —</div>
+          <div class="share-assumption-text" id="shareReframe"></div>
+        </div>
+
+        <!-- SLIDE 5: Sit with this — accent orange -->
+        <div class="share-slide ss-accent" data-slide="5">
           <div class="share-assumption">Sit with this —</div>
           <div class="share-assumption-text" id="shareSitWith"></div>
         </div>
 
-        <!-- SLIDE 3: Sassy closer -->
-        <div class="share-slide" data-slide="2">
-          <div class="share-slide-take" id="shareTake3"></div>
+        <!-- SLIDE 6: Sassy closer — dark ink -->
+        <div class="share-slide ss-ink" data-slide="6">
           <div class="share-assumption">Reframe says —</div>
           <div class="share-assumption-text" id="shareClosingLine"></div>
         </div>
@@ -1734,14 +1782,13 @@ nav{padding:16px var(--px)}
       </div>
     </div>
 
-    <!-- Attribution -->
-    <div class="share-attribution" style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-axiom-light.svg" alt="Reframe by Axiom" style="height:18px;width:auto;opacity:0.7" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
-      <span style="display:none;font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.3)">Reframe by <span style="color:var(--accent2)">Axiom</span></span>
-      <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.08em;color:rgba(255,255,255,0.25)">· axiom.so</span>
+    <!-- Attribution: reframe logo left, axiom logo right -->
+    <div class="share-attribution-row">
+      <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-axiom-light.svg" alt="Reframe by Axiom" class="share-attr-reframe" onerror="this.style.display='none'">
+      <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-dark.svg" alt="Axiom" class="share-attr-axiom" onerror="this.style.display='none'">
     </div>
 
-    <!-- Share actions: 3 buttons -->
+    <!-- Share actions -->
     <div class="share-actions">
       <button class="share-dl-btn share-dl-insta" onclick="downloadShareCard('post')" title="Download for Instagram Post">
         <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
@@ -1759,6 +1806,7 @@ nav{padding:16px var(--px)}
 
   </div>
 </div>
+
 
 <script>
 // ── STATE ──
@@ -2143,8 +2191,7 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     document.getElementById('shareScore').textContent      = p.score;
 
     // Show result action buttons
-    const _ra = document.getElementById('resultActions');
-    if(_ra){ _ra.style.opacity=''; void _ra.offsetWidth; _ra.classList.add('streamed'); }
+  // resultActions removed — buttons only at end
 
     // Render carousel + closing line
     await new Promise(r => setTimeout(r, 1000));
@@ -2280,9 +2327,39 @@ function renderLeads(p){
     const card = document.createElement('a');
     card.className = `lens-card theme-${themes[i % 6]}${isInteractive ? ' is-interactive' : ''}`;
     card.style.cssText = `width:${cardWidth}px;min-width:${cardWidth}px;margin-right:16px;`;
-    // Build a real search URL so every card opens something useful
-    const searchQ = encodeURIComponent(lens.title + ' ' + lens.source);
-    card.href = 'https://www.google.com/search?q=' + searchQ;
+    // Build a direct or fallback URL for the lens
+    const knownDomains = {
+      'The Economist':'economist.com','The Atlantic':'theatlantic.com',
+      'New Yorker':'newyorker.com','The New Yorker':'newyorker.com',
+      'New York Times':'nytimes.com','NYT':'nytimes.com',
+      'The Guardian':'theguardian.com','BBC':'bbc.com',
+      'Financial Times':'ft.com','Bloomberg':'bloomberg.com',
+      'Harvard Business Review':'hbr.org','HBR':'hbr.org',
+      'Wired':'wired.com','TechCrunch':'techcrunch.com',
+      'The Atlantic Monthly':'theatlantic.com',
+      'Substack':'substack.com','Medium':'medium.com',
+      'YouTube':'youtube.com','Netflix':'netflix.com',
+      'Spotify':'open.spotify.com',
+      'Rolling Stone':'rollingstone.com','Pitchfork':'pitchfork.com',
+      'The Ken':'the-ken.com','Scroll':'scroll.in',
+      'The Wire':'thewire.in','Mint':'livemint.com',
+      'Reuters':'reuters.com','AP':'apnews.com',
+      'Washington Post':'washingtonpost.com','The Washington Post':'washingtonpost.com',
+      'Vox':'vox.com','FiveThirtyEight':'fivethirtyeight.com',
+      'Jacobin':'jacobinmag.com','Foreign Affairs':'foreignaffairs.com',
+      'Aeon':'aeon.co','Quillette':'quillette.com',
+      'Nautilus':'nautil.us','Lapham's Quarterly':'laphamsquarterly.org',
+    };
+    let cardDomain = null;
+    for(const [name, domain] of Object.entries(knownDomains)){
+      if(lens.source && lens.source.toLowerCase().includes(name.toLowerCase())){
+        cardDomain = domain; break;
+      }
+    }
+    const searchQ = encodeURIComponent('"' + lens.title + '"');
+    card.href = cardDomain
+      ? 'https://' + cardDomain + '/search?q=' + encodeURIComponent(lens.title)
+      : 'https://duckduckgo.com/?q=' + searchQ;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
@@ -2346,8 +2423,6 @@ function renderLeads(p){
     sit.style.animation = '';
     void sit.offsetWidth;
     document.getElementById('sitPrompt').textContent = p.sit_with_this;
-    const sitEcho = document.getElementById('sitTakeEcho');
-    if(sitEcho) sitEcho.textContent = currentTake ? '"' + currentTake + '"' : '';
     sit.classList.add('revealed');
     scrollTo(sit);
   }, 600);
@@ -2357,9 +2432,6 @@ function renderLeads(p){
     const cl = document.getElementById('closingLine');
     cl.style.opacity = ''; cl.style.animation = ''; void cl.offsetWidth;
     document.getElementById('closingText').textContent = p.closing_line;
-    // Add take echo at top of closing block
-    const closingEcho = document.getElementById('closingTakeEcho');
-    if(closingEcho) closingEcho.textContent = currentTake ? '"' + currentTake + '"' : '';
     cl.classList.add('revealed');
     scrollTo(cl);
   }, 1400);
@@ -2385,18 +2457,16 @@ function copySteal(){
 
 // ── SHARE ──
 function openShare(){
-  // Populate all slide takes
-  const takeStr = currentTake ? '"' + currentTake + '"' : '';
-  ['shareTake1','shareTake2','shareTake3'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.textContent = takeStr;
-  });
-  // Populate sit with this on slide 2
-  const sitEl = document.getElementById('shareSitWith');
-  if(sitEl) sitEl.textContent = document.getElementById('sitPrompt')?.textContent || '';
-  // Populate closing line on slide 3
-  const clEl = document.getElementById('shareClosingLine');
-  if(clEl) clEl.textContent = document.getElementById('closingText')?.textContent || '';
+  // Populate each slide from the rendered results
+  const g = id => document.getElementById(id)?.textContent || '';
+  const s = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  s('shareOrigins',     g('block0Content'));
+  s('shareSteelman',    g('block1Content'));
+  s('shareCounter',     g('block3Content'));
+  s('shareReframe',     g('block5Content'));
+  s('shareSitWith',     g('sitPrompt'));
+  s('shareClosingLine', g('closingText'));
+  // shareAssumption and shareScore are already set during run
   // Init slide nav
   initShareSlides();
   document.getElementById('shareModal').classList.add('open');
@@ -2429,7 +2499,7 @@ function resetTool(){
     const el = document.getElementById(id);
     if(el) el.textContent = '';
   });
-  document.getElementById('resultActions') && document.getElementById('resultActions').classList.remove('streamed');
+  // resultActions removed from HTML
   const la = document.getElementById('leadsActions');
   if(la) la.classList.remove('streamed');
   document.getElementById('scoreBar').style.width = '0';
@@ -2489,7 +2559,7 @@ function carouselMove(dir){
 
 // ── SHARE MODAL SLIDES ──
 let shareSlideIndex = 0;
-const SHARE_TOTAL = 3;
+const SHARE_TOTAL = 7;
 
 function initShareSlides(){
   const dotsEl = document.getElementById('shareNavDots');
@@ -2536,12 +2606,17 @@ function downloadShareCard(format){
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  // Background
-  ctx.fillStyle = '#0A0A08';
+  // Background — match slide color scheme
+  const slideEl = document.querySelector('.share-slide[data-slide="'+shareSlideIndex+'"]');
+  const isAccent = slideEl && slideEl.classList.contains('ss-accent');
+  const isOff    = slideEl && slideEl.classList.contains('ss-off');
+  ctx.fillStyle = isAccent ? '#E8441A' : isOff ? '#F9F9F7' : '#0A0A08';
   ctx.fillRect(0, 0, W, H);
+  const textColor = isOff ? '#0A0A08' : '#FFFFFF';
+  const labelColor = isAccent ? 'rgba(255,255,255,0.65)' : isOff ? '#E8441A' : '#FF5C32';
 
   // Accent line top
-  ctx.fillStyle = '#E8441A';
+  ctx.fillStyle = isOff ? '#E8441A' : isAccent ? 'rgba(255,255,255,0.3)' : '#E8441A';
   ctx.fillRect(0, 0, W, 6);
 
   const pad = 90;
@@ -2556,40 +2631,40 @@ function downloadShareCard(format){
   let y = isStory ? 320 : 240;
 
   ctx.font = '500 20px monospace';
-  ctx.fillStyle = '#FF5C32';
+  ctx.fillStyle = labelColor;
   ctx.letterSpacing = '0.12em';
 
+  const slideLabels = ["YOU'RE ASSUMING —","WHERE THIS COMES FROM —","STRONGEST CASE FOR THIS —","YOUR CRITIC SAYS —","YOUR TAKE SHARPENED —","SIT WITH THIS —","REFRAME SAYS —"];
+  const slideIds    = [null,'shareOrigins','shareSteelman','shareCounter','shareReframe','shareSitWith','shareClosingLine'];
+  const g = id => id ? (document.getElementById(id)?.textContent || '') : '';
+
+  ctx.fillText(slideLabels[slide] || '', pad, y); y += 56;
+
   if(slide === 0){
-    ctx.fillText("YOU'RE ASSUMING —", pad, y); y += 56;
-    ctx.font = 'italic 52px Georgia, serif';
-    ctx.fillStyle = '#FFFFFF';
-    y = wrapText(ctx, currentAssumption || '', pad, y, W - pad*2, 64);
-    y += 60;
-    ctx.font = '400 28px monospace';
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
-    ctx.fillText('DEFENSIBILITY SCORE', pad, y); y += 50;
-    ctx.font = '400 120px Georgia, serif';
-    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'italic 48px Georgia, serif';
+    ctx.fillStyle = textColor;
+    y = wrapText(ctx, currentAssumption || '', pad, y, W - pad*2, 62);
+    y += 50;
+    ctx.font = '400 22px monospace';
+    ctx.fillStyle = isOff ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)';
+    ctx.fillText('DEFENSIBILITY SCORE', pad, y); y += 44;
+    ctx.font = '400 110px Georgia, serif';
+    ctx.fillStyle = textColor;
     const score = document.getElementById('shareScore')?.textContent || '—';
-    ctx.fillText(score + '/100', pad, y + 90);
-  } else if(slide === 1){
-    ctx.fillText("SIT WITH THIS —", pad, y); y += 56;
-    ctx.font = 'italic 44px Georgia, serif';
-    ctx.fillStyle = '#FFFFFF';
-    const sit = document.getElementById('sitPrompt')?.textContent || '';
-    wrapText(ctx, sit, pad, y, W - pad*2, 58);
+    ctx.fillText(score + '/100', pad, y + 80);
   } else {
-    ctx.fillText("REFRAME SAYS —", pad, y); y += 56;
     ctx.font = 'italic 40px Georgia, serif';
-    ctx.fillStyle = '#FFFFFF';
-    const closing = document.getElementById('closingText')?.textContent || '';
-    wrapText(ctx, closing, pad, y, W - pad*2, 54);
+    ctx.fillStyle = textColor;
+    wrapText(ctx, g(slideIds[slide]), pad, y, W - pad*2, 54);
   }
 
   // Attribution bottom
-  ctx.font = '400 22px monospace';
-  ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.fillText('Reframe by Axiom · axiom.so', pad, H - 60);
+  ctx.font = '400 20px monospace';
+  ctx.fillStyle = isOff ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)';
+  ctx.fillText('Reframe by Axiom', pad, H - 60);
+  ctx.textAlign = 'right';
+  ctx.fillText('Axiom', W - pad, H - 60);
+  ctx.textAlign = 'left';
 
   // Download
   const link = document.createElement('a');
