@@ -26,6 +26,9 @@
   --sans:'DM Sans',system-ui,sans-serif;
 }
 
+
+.nav-axiom-logo{height:28px;width:auto;display:block}
+.nav-reframe-logo{height:22px;width:auto;display:block}
 html{scroll-behavior:smooth}
 body{
   background:var(--white);
@@ -533,7 +536,7 @@ nav{
 
 /* Block 6 — Score */
 .result-block.score-block{
-  padding:36px 0 24px;
+  padding:48px 0;
   border-bottom:none;
 }
 
@@ -541,51 +544,35 @@ nav{
   padding-left:30px;
 }
 
-.score-display{
-  text-align:center;
-  padding:0 30px;
-}
-
-.score-stars{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  margin-bottom:12px;
-}
-
-.score-star{
-  font-size:40px;
-  color:var(--rule);
-  transition:color 0.3s ease, transform 0.3s ease;
-  display:inline-block;
-}
-
-.score-star.filled{
-  color:var(--accent);
-  transform:scale(1.05);
-}
-
-.score-num{
-  font-family:var(--serif);
-  font-size:18px;
-  color:var(--mid);
-  letter-spacing:0.04em;
-  margin-bottom:8px;
-  display:none;
-}
-
+.score-num{ display:none }
 .score-label{
   font-family:var(--mono);
   font-size:9px;
   letter-spacing:0.12em;
   text-transform:uppercase;
   color:var(--mid);
+  margin-bottom:20px;
+}
+.score-bar-track{ display:none }
+.score-bar-fill{ display:none }
+
+/* Star rating */
+.score-display{ text-align:center; padding:8px 0 }
+.star-row{
+  display:flex;
+  justify-content:center;
+  gap:12px;
   margin-bottom:16px;
 }
-
-.score-bar-track{ display:none; }
-.score-bar-fill{ display:none; }
+.star{
+  font-size:48px;
+  color:var(--rule);
+  transition:color 0.3s ease, transform 0.2s ease;
+  line-height:1;
+  display:inline-block;
+}
+.star.lit{ color:var(--accent); }
+.star.pop{ transform:scale(1.3); }
 
 .score-elevate{
   font-size:13px;
@@ -595,8 +582,6 @@ nav{
   padding:12px 16px;
   border-left:2px solid var(--rule);
   margin-top:4px;
-  text-align:left;
-  display:inline-block;
 }
 
 /* Steal This Argument */
@@ -699,8 +684,8 @@ nav{
 .result-actions{
   display:flex;gap:12px;
   flex-wrap:wrap;
-  margin-top:32px;
-  padding-top:24px;
+  margin-top:48px;
+  padding-top:32px;
   border-top:1px solid var(--rule);
   opacity:0;
 }
@@ -734,226 +719,311 @@ nav{
 }
 .action-secondary:hover{border-color:var(--ink)}
 
+
+/* ── SHARE SLIDE COLOR SCHEMES ── */
+/* ink (dark) */
+.ss-ink{background:var(--ink);}
+.ss-ink .share-assumption{color:var(--accent2)}
+.ss-ink .share-assumption-text{color:#F9F9F7}
+.ss-ink .share-score-row{border-color:rgba(255,255,255,0.1)}
+.ss-ink .share-score-num{color:#F9F9F7}
+.ss-ink .share-score-label{color:rgba(255,255,255,0.4)}
+
+/* accent (orange) */
+.ss-accent{background:var(--accent);}
+.ss-accent .share-assumption{color:rgba(255,255,255,0.65);letter-spacing:0.14em}
+.ss-accent .share-assumption-text{color:#fff}
+
+/* off-white */
+.ss-off{background:#F9F9F7;}
+.ss-off .share-assumption{color:var(--accent)}
+.ss-off .share-assumption-text{color:var(--ink);font-style:italic}
+
+/* Attribution row */
+.share-attribution-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:auto;
+  padding-top:12px;
+  border-top:1px solid rgba(128,128,128,0.15);
+  margin-bottom:14px;
+}
+.share-attr-left,.share-attr-right{display:flex;align-items:center}
+.share-attr-reframe{height:16px;width:auto;opacity:0.65}
+.share-attr-axiom{height:20px;width:auto;opacity:0.65}
+/* White versions for dark (ink) slides */
+.share-card.mode-ink .share-attr-light{display:flex!important}
+.share-card.mode-ink .share-attr-dark{display:none!important}
+.share-card.mode-ink .share-attr-axiom-text,.share-card.mode-ink .share-attr-reframe-text{display:none!important}
+/* Dark versions for off-white slides */
+.share-card.mode-off .share-attr-dark{display:flex!important}
+.share-card.mode-off .share-attr-light{display:none!important}
+.share-card.mode-off .share-attr-axiom-text,.share-card.mode-off .share-attr-reframe-text{display:none!important}
+/* Text versions for orange slides */
+.share-card.mode-accent .share-attr-light,.share-card.mode-accent .share-attr-dark{display:none!important}
+.share-card.mode-accent .share-attr-axiom-text{
+  display:inline!important;
+  font-family:var(--serif);font-size:16px;font-weight:400;
+  color:rgba(255,255,255,0.85);letter-spacing:0.01em;
+}
+.share-card.mode-accent .share-attr-reframe-text{
+  display:inline!important;
+  font-family:var(--serif);font-size:14px;font-style:italic;
+  color:rgba(255,255,255,0.85);
+}
+.share-attr-reframe-text em{font-style:italic}
+
+/* Take echo on each slide */
+.share-slide-take{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:12px;
+  line-height:1.5;
+  margin-bottom:14px;
+  padding-bottom:12px;
+}
+/* ink slide take */
+.share-slide .share-slide-take{ color:rgba(255,255,255,0.35); border-bottom:1px solid rgba(255,255,255,0.1); }
+/* off-white slide take */
+.ss-off-take{ color:rgba(10,10,8,0.35)!important; border-bottom:1px solid rgba(10,10,8,0.1)!important; }
+/* orange slide take */
+.ss-accent-take{ color:rgba(255,255,255,0.45)!important; border-bottom:1px solid rgba(255,255,255,0.2)!important; }
+
+
+/* Share preview canvas */
+.share-preview-wrap{
+  width:100%;
+  margin-bottom:14px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(255,255,255,0.04);
+  border-radius:2px;
+  overflow:hidden;
+  min-height:240px;
+}
+.share-preview-canvas{
+  max-width:100%;
+  max-height:340px;
+  width:auto;
+  height:auto;
+  display:block;
+}
+
+/* Split button group */
+.share-btn-group{
+  display:flex;
+  align-items:stretch;
+  flex:1;
+  min-width:0;
+  border-radius:2px;
+  overflow:hidden;
+}
+.share-btn-group .share-dl-btn{
+  flex:1;
+  border-radius:0;
+  border-right:1px solid rgba(255,255,255,0.08)!important;
+}
+.share-dl-arrow{
+  width:38px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--ink3);
+  border:1px solid rgba(255,255,255,0.12);
+  border-left:none;
+  color:rgba(255,255,255,0.4);
+  cursor:not-allowed;
+  transition:all 0.15s;
+  border-radius:0;
+  padding:0;
+}
+.share-dl-arrow svg{width:14px;height:14px}
+.share-dl-arrow.active{
+  color:#fff;
+  background:var(--accent);
+  cursor:pointer;
+  border-color:var(--accent);
+}
+.share-dl-arrow.active:hover{opacity:0.85}
+.share-mode-btn.selected{
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+}
+
 /* ── SHARE MODAL ── */
 .share-modal{
   display:none;
   position:fixed;inset:0;
-  background:rgba(10,10,8,0.85);
+  background:rgba(10,10,8,0.75);
   z-index:500;
   align-items:center;justify-content:center;
   backdrop-filter:blur(6px);
-  padding:20px;
 }
 .share-modal.open{display:flex}
 
-.share-shell{
-  width:100%;max-width:600px;
-  display:flex;flex-direction:column;
-  gap:16px;
+.share-card{
+  background:transparent;
+  width:460px;
+  max-width:92vw;
+  padding:32px 36px 28px;
+  position:relative;
   animation:fadeUp 0.3s ease;
-  max-height:95vh;
-  overflow-y:auto;
-  padding:4px;
+  max-height:90vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
-/* Top bar */
-.share-topbar{
-  display:flex;align-items:center;justify-content:space-between;
-}
-.share-topbar-title{
-  font-family:var(--mono);font-size:9px;
-  letter-spacing:0.14em;text-transform:uppercase;
-  color:rgba(255,255,255,0.45);
-}
 .share-close{
+  position:absolute;top:14px;right:18px;
   font-family:var(--mono);font-size:9px;
   letter-spacing:0.1em;text-transform:uppercase;
-  color:rgba(255,255,255,0.4);
+  color:rgba(255,255,255,0.35);
   cursor:pointer;background:none;border:none;
-  transition:color 0.12s;padding:4px 0;
+  transition:color 0.12s;
 }
-.share-close:hover{color:rgba(255,255,255,0.9)}
+.share-close:hover{color:rgba(255,255,255,0.8)}
 
-/* Card nav */
-.share-card-nav{
-  display:flex;align-items:center;gap:10px;
-  overflow-x:auto;
-  padding-bottom:4px;
+/* Arrow nav row */
+.share-nav{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:20px;
 }
 .share-nav-btn{
-  flex-shrink:0;
-  padding:6px 14px;
-  font-family:var(--mono);font-size:8px;
-  letter-spacing:0.1em;text-transform:uppercase;
-  border:1px solid rgba(255,255,255,0.15);
-  background:transparent;color:rgba(255,255,255,0.45);
-  cursor:pointer;transition:all 0.15s;border-radius:2px;
-  white-space:nowrap;
-}
-.share-nav-btn:hover{border-color:rgba(255,255,255,0.4);color:rgba(255,255,255,0.8)}
-.share-nav-btn.active{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.4);color:white}
-
-/* The card itself — rendered area */
-.share-card-wrap{
-  display:flex;justify-content:center;
-}
-
-.share-card{
-  font-family:'DM Serif Display',Georgia,serif;
-  background:var(--ink);
-  position:relative;
-  overflow:hidden;
-  flex-shrink:0;
-}
-
-/* Square format: 1080×1080 displayed at 360px */
-.share-card.fmt-square{
-  width:360px;height:360px;
-}
-/* Story format: 1080×1920 — keep height same, adjust width */
-.share-card.fmt-story{
-  width:190px;height:360px;
-}
-
-/* Shared card inner padding */
-.sc-inner{
-  position:absolute;inset:0;
-  padding:24px;
-  display:flex;flex-direction:column;
-  justify-content:space-between;
-  overflow:hidden;
-}
-
-/* Card elements */
-.sc-eyebrow{
-  font-family:'Space Mono',monospace;
-  font-size:8px;letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.35);
-  margin-bottom:8px;
-}
-.sc-take{
-  font-family:'DM Serif Display',Georgia,serif;
-  font-style:italic;font-size:11px;
+  background:none;border:1px solid rgba(255,255,255,0.15);
   color:rgba(255,255,255,0.5);
-  line-height:1.4;margin-bottom:16px;
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;
+  transition:all 0.15s;border-radius:0;
+  flex-shrink:0;
+}
+.share-nav-btn:hover{border-color:rgba(255,255,255,0.5);color:rgba(255,255,255,0.9)}
+.share-nav-btn:disabled{opacity:0.2;cursor:not-allowed}
+.share-nav-dots{
+  display:flex;gap:6px;align-items:center;flex:1;
+  justify-content:center;
+}
+.share-nav-dot{
+  width:20px;height:2px;
+  background:rgba(255,255,255,0.2);
+  cursor:pointer;border:none;padding:0;
+  transition:all 0.15s;
+}
+.share-nav-dot.active{background:var(--accent);width:28px}
+
+/* Slides */
+.share-slides-viewport{overflow:hidden;flex:1;min-height:0;border-radius:0;}
+.share-slides-track{
+  display:flex;
+  transition:transform 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.share-slide{
+  min-width:100%;
+  padding:20px 24px;
+  border-radius:0;
+}
+
+/* Slide take echo (small italic take at top) */
+.share-slide-take{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:12px;
+  color:rgba(255,255,255,0.35);
+  line-height:1.5;
+  margin-bottom:14px;
   padding-bottom:14px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.share-take{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:15px;
+  color:rgba(255,255,255,0.6);
+  line-height:1.5;
+  margin-bottom:24px;
+  padding-bottom:24px;
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
-.sc-label{
-  font-family:'Space Mono',monospace;
-  font-size:7px;letter-spacing:0.14em;
+
+.share-assumption{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.12em;
   text-transform:uppercase;
-  color:var(--accent);margin-bottom:8px;
-}
-.sc-main{
-  font-family:'DM Serif Display',Georgia,serif;
-  font-style:italic;
-  color:white;
-  line-height:1.2;
-  flex:1;
-  display:flex;align-items:center;
-}
-.sc-score-num{
-  font-family:'DM Serif Display',Georgia,serif;
-  font-size:88px;line-height:1;
-  color:white;letter-spacing:-0.04em;
+  color:var(--accent2);
   margin-bottom:8px;
 }
-.sc-score-note{
-  font-family:'Space Mono',monospace;
-  font-size:8px;letter-spacing:0.04em;
-  color:rgba(255,255,255,0.5);
-  line-height:1.5;margin-top:8px;
-  max-width:240px;
+
+.share-assumption-text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:18px;
+  color:var(--white);
+  line-height:1.35;
+  margin-bottom:20px;
 }
 
-/* Bottom branding strip */
-.sc-brand{
-  display:flex;align-items:center;justify-content:space-between;
-  padding-top:10px;
+.share-score-row{
+  display:flex;align-items:baseline;gap:12px;
+  padding:16px 0;
   border-top:1px solid rgba(255,255,255,0.1);
-  margin-top:12px;
-  flex-shrink:0;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  margin-bottom:16px;
 }
-.sc-brand-logo{ display:none; }
-.sc-brand-sub{ display:none; }
+.share-score-num{
+  font-family:var(--serif);
+  font-size:52px;
+  color:var(--white);
+  line-height:1;
+  letter-spacing:-0.03em;
+}
+.share-score-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.4);
+}
 
-/* Accent bar at top of card */
-.sc-accent-bar{
-  position:absolute;top:0;left:0;right:0;
-  height:3px;background:var(--accent);
-}
+.share-attribution{margin-top:auto;padding-top:16px}
 
-/* Card 4 sit-with-this — light card */
-.share-card.card-sit{
-  background:var(--paper,#F5F2EB);
-}
-.share-card.card-sit .sc-main{color:var(--ink);}
-.share-card.card-sit .sc-label{color:var(--mid,#5a5850);}
-.share-card.card-sit .sc-brand-logo{color:var(--ink);}
-.share-card.card-sit .sc-brand-sub{color:var(--mid,#5a5850);}
-.share-card.card-sit .sc-brand{border-top-color:rgba(14,14,12,0.12);}
-.share-card.card-sit .sc-accent-bar{background:var(--ink);}
-
-/* Card 6 sassy — accent background */
-.share-card.card-sassy{background:#E8441A;}
-.share-card.card-sassy .sc-main{color:white;}
-.share-card.card-sassy .sc-brand{border-top-color:rgba(255,255,255,0.2);}
-.share-card.card-sassy .sc-brand-logo{color:white;}
-.share-card.card-sassy .sc-brand-sub{color:rgba(255,255,255,0.5);}
-.share-card.card-sassy .sc-accent-bar{background:var(--ink);}
-
-/* Format toggle */
-.share-fmt-row{
-  display:flex;align-items:center;gap:8px;
-}
-.share-fmt-label{
-  font-family:var(--mono);font-size:8px;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:rgba(255,255,255,0.35);
-}
-.share-fmt-btn{
-  padding:5px 12px;
-  font-family:var(--mono);font-size:8px;
-  letter-spacing:0.08em;text-transform:uppercase;
-  border:1px solid rgba(255,255,255,0.15);
-  background:transparent;color:rgba(255,255,255,0.4);
-  cursor:pointer;transition:all 0.15s;border-radius:2px;
-}
-.share-fmt-btn.active{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.4);color:white;}
-
-/* Action row */
-.share-action-row{
-  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
-}
+/* 3 share action buttons */
+.share-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .share-dl-btn{
-  flex:1;min-width:140px;
-  padding:12px 18px;
-  background:white;color:var(--ink);
+  flex:1;
+  min-width:0;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:10px 12px;
   border:none;
-  font-family:var(--mono);font-size:9px;
-  letter-spacing:0.1em;text-transform:uppercase;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:opacity 0.15s;
+  border-radius:2px;
+  white-space:nowrap;
+}
+.share-dl-insta{background:var(--ink3);color:#fff;border:1px solid rgba(255,255,255,0.12)}
+.share-dl-story{background:var(--ink3);color:#fff;border:1px solid rgba(255,255,255,0.12)}
+.share-dl-x{background:#fff;color:#0A0A08}
+.share-dl-btn:hover{opacity:0.85}
+.share-icon{width:13px;height:13px;flex-shrink:0}
+
+/* OLD classes kept for fallback */
+.share-copy-btn{
+  flex:1;padding:10px;
+  background:var(--accent);color:var(--white);border:none;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
   cursor:pointer;transition:opacity 0.15s;
 }
-.share-dl-btn:hover{opacity:0.88}
-.share-x-btn{
-  flex:1;min-width:120px;
-  padding:12px 18px;
-  background:transparent;color:white;
-  border:1px solid rgba(255,255,255,0.25);
-  font-family:var(--mono);font-size:9px;
-  letter-spacing:0.1em;text-transform:uppercase;
-  cursor:pointer;transition:all 0.15s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.share-x-btn:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05);}
-.share-hint{
-  font-family:var(--mono);font-size:8px;
-  color:rgba(255,255,255,0.25);
-  letter-spacing:0.04em;
-  width:100%;text-align:center;
-}
+.share-copy-btn:hover{opacity:0.85}
+
 
 /* Leads actions */
 .leads-actions{
@@ -1003,16 +1073,15 @@ nav{
   max-width:760px;
   margin:0 auto;
   padding:0 48px 80px;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.2s forwards;
+  opacity:1;
 }
 
 .leads-section.active{display:block}
 
 .leads-divider{
   display:flex;align-items:center;gap:16px;
-  margin-bottom:32px;
-  padding-top:32px;
+  margin-bottom:40px;
+  padding-top:24px;
   border-top:2px solid var(--ink);
 }
 
@@ -1051,207 +1120,171 @@ nav{
   background:var(--accent-bg);
 }
 
-/* ── CAROUSEL — stacked card style ── */
-.carousel-wrap{
-  position:relative;
-  margin:0 -48px 40px;
-  padding:0 48px;
-  overflow:hidden;
-}
-
-.carousel-stage{
-  position:relative;
-  height:220px;
-  margin-bottom:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* Lens grid — 2×3 */
+.lens-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:48px;
 }
 
 .lens-card{
-  position:absolute;
-  left:0; right:0;
-  width:100%;
-  height:200px;
-  border-radius:12px;
+  border-radius:8px;
   overflow:hidden;
   cursor:pointer;
   text-decoration:none;
-  color:white;
-  display:flex;
-  flex-direction:row;
-  box-shadow:0 8px 32px rgba(10,10,8,0.22);
-  transition:transform 0.45s cubic-bezier(.22,.68,0,1.15),
-             opacity 0.45s ease,
-             box-shadow 0.3s ease;
-  will-change:transform,opacity;
-  transform-origin:bottom center;
-}
-
-/* Active card — full width, front */
-.lens-card[data-state="active"]{
-  transform:translateY(0) scale(1);
-  opacity:1;
-  z-index:3;
-  pointer-events:auto;
-}
-
-/* Next card — peeking behind at top right, slightly smaller */
-.lens-card[data-state="next"]{
-  transform:translateY(14px) scale(0.96) translateX(18px) rotate(2.5deg);
-  opacity:0.85;
-  z-index:2;
-  pointer-events:none;
-}
-
-/* Previous card — peeking behind at top left */
-.lens-card[data-state="prev"]{
-  transform:translateY(14px) scale(0.96) translateX(-18px) rotate(-2.5deg);
-  opacity:0.7;
-  z-index:1;
-  pointer-events:none;
-}
-
-/* Hidden cards */
-.lens-card[data-state="hidden"]{
-  transform:translateY(30px) scale(0.9);
+  color:inherit;
   opacity:0;
-  z-index:0;
-  pointer-events:none;
-}
-
-.lens-card:hover[data-state="active"]{
-  box-shadow:0 16px 48px rgba(10,10,8,0.32);
-  transform:translateY(-3px) scale(1);
-}
-
-/* Left panel — coloured, fixed width */
-.lens-panel-left{
-  width:52%;
-  flex-shrink:0;
-  position:relative;
-  overflow:hidden;
+  transform:translateY(12px);
+  transition:transform 0.2s cubic-bezier(.22,.68,0,1.2),box-shadow 0.2s;
   display:flex;
   flex-direction:column;
-  justify-content:flex-end;
-  padding:20px;
+  position:relative;
+  box-shadow:0 2px 12px rgba(10,10,8,0.08);
 }
 
-.lens-panel-bg{
+.lens-card.revealed{
+  animation:fadeUp 0.45s ease forwards;
+}
+
+.lens-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(10,10,8,0.16);
+}
+
+.lens-card:hover .lens-arrow-icon{opacity:1;transform:translate(3px,-3px)}
+
+/* Thumbnail top half */
+.lens-thumb{
+  height:110px;
+  position:relative;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+.lens-thumb-img{
   position:absolute;inset:0;
-  object-fit:cover;
   width:100%;height:100%;
-  opacity:0.35;
-  filter:saturate(0.7);
+  object-fit:cover;
+  opacity:0.45;
+  filter:saturate(0.8);
+  transition:transform 0.4s ease,opacity 0.3s;
 }
 
-.lens-panel-overlay{
+.lens-card:hover .lens-thumb-img{transform:scale(1.04);opacity:0.55}
+
+.lens-thumb-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 100%);
+  background:linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%);
 }
 
-.lens-card-step{
-  position:relative;
-  font-family:var(--mono);
-  font-size:8px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.55);
-  margin-bottom:6px;
-}
-
-.lens-card-type{
-  position:relative;
-  font-family:var(--serif);
-  font-size:22px;
-  line-height:1.1;
-  color:white;
-  font-weight:400;
-}
-
-.lens-card-format{
+/* Source logo in thumb */
+.lens-source-logo{
   position:absolute;
-  top:16px; right:16px;
+  top:10px;left:10px;
+  width:28px;height:28px;
+  border-radius:6px;
+  background:white;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.lens-source-logo img{
+  width:20px;height:20px;
+  object-fit:contain;
+}
+
+.lens-source-logo-fallback{
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:700;
+  color:var(--ink);
+}
+
+/* Format badge in thumb */
+.lens-format-badge{
+  position:absolute;
+  top:10px;right:10px;
   font-family:var(--mono);
   font-size:7px;
   letter-spacing:0.1em;
   text-transform:uppercase;
-  padding:4px 9px;
-  border-radius:3px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(4px);
-  color:rgba(255,255,255,0.9);
+  padding:3px 7px;
+  border-radius:2px;
+  background:rgba(0,0,0,0.5);
+  color:rgba(255,255,255,0.85);
 }
 
-.lens-source-logo{
+/* Arrow in thumb */
+.lens-arrow-icon{
   position:absolute;
-  top:16px; left:16px;
-  width:28px; height:28px;
-  border-radius:6px;
-  background:white;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);
-  overflow:hidden;
-}
-.lens-source-logo img{ width:20px;height:20px;object-fit:contain; }
-.lens-source-logo-fallback{
-  font-family:var(--mono);font-size:9px;font-weight:700;color:var(--ink);
+  bottom:10px;right:12px;
+  font-size:13px;
+  color:white;
+  opacity:0;
+  transition:all 0.2s;
 }
 
-/* Right panel — content */
-.lens-panel-right{
+/* Step label inside thumb */
+.lens-step-label{
+  position:absolute;
+  bottom:10px;left:10px;
+  font-family:var(--mono);
+  font-size:7px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
+}
+
+/* Card body — coloured background */
+.lens-body{
+  padding:14px 16px 16px;
   flex:1;
-  padding:20px 20px 20px 18px;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
-  overflow:hidden;
+  gap:6px;
+}
+
+.lens-type-label{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  font-weight:500;
+  opacity:0.8;
 }
 
 .lens-anchor{
   font-family:var(--mono);
   font-size:8px;
   letter-spacing:0.04em;
-  opacity:0.5;
+  opacity:0.55;
   font-style:italic;
-  margin-bottom:6px;
 }
 
 .lens-title{
   font-family:var(--serif);
-  font-size:16px;
+  font-size:15px;
   line-height:1.25;
+  font-weight:500;
   flex:1;
-  margin-bottom:8px;
-  display:-webkit-box;
-  -webkit-line-clamp:3;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
 }
 
 .lens-source-line{
   font-family:var(--mono);
   font-size:8px;
   letter-spacing:0.04em;
-  opacity:0.5;
-  margin-bottom:6px;
+  opacity:0.55;
 }
 
 .lens-why{
   font-size:11px;
-  line-height:1.5;
+  line-height:1.55;
   opacity:0.75;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-
-.lens-card-bottom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:8px;
+  margin-top:2px;
 }
 
 .lens-tag-pill{
@@ -1260,88 +1293,84 @@ nav{
   font-size:7px;
   letter-spacing:0.08em;
   text-transform:uppercase;
-  padding:3px 8px;
-  border-radius:3px;
-  background:rgba(255,255,255,0.15);
-  color:rgba(255,255,255,0.9);
+  padding:2px 7px;
+  border-radius:2px;
+  background:rgba(255,255,255,0.18);
+  color:inherit;
+  margin-top:4px;
+  align-self:flex-start;
 }
 
-.lens-open-icon{
-  font-size:16px;
-  opacity:0.5;
-  transition:opacity 0.15s,transform 0.15s;
-}
-.lens-card:hover .lens-open-icon{opacity:1;transform:translate(2px,-2px)}
+/* Card colour themes */
+.lens-card.theme-0 .lens-body{background:#1B3F6B;color:white}
+.lens-card.theme-0 .lens-thumb{background:#1B3F6B}
+.lens-card.theme-1 .lens-body{background:#0D9488;color:white}
+.lens-card.theme-1 .lens-thumb{background:#0D9488}
+.lens-card.theme-2 .lens-body{background:#C24B2A;color:white}
+.lens-card.theme-2 .lens-thumb{background:#C24B2A}
+.lens-card.theme-3 .lens-body{background:#5C3A8C;color:white}
+.lens-card.theme-3 .lens-thumb{background:#5C3A8C}
+.lens-card.theme-4 .lens-body{background:#1C1917;color:white}
+.lens-card.theme-4 .lens-thumb{background:#1C1917}
+.lens-card.theme-5 .lens-body{background:#B8520A;color:white}
+.lens-card.theme-5 .lens-thumb{background:#B8520A}
 
-/* Card colour themes — left panel bg */
-.lens-card.theme-0 .lens-panel-left{background:#1B3F6B}
-.lens-card.theme-1 .lens-panel-left{background:#0D6B4F}
-.lens-card.theme-2 .lens-panel-left{background:#C24B2A}
-.lens-card.theme-3 .lens-panel-left{background:#5C3A8C}
-.lens-card.theme-4 .lens-panel-left{background:#1C1917}
-.lens-card.theme-5 .lens-panel-left{background:#B8520A}
 
-/* Right panel colour tinted bg */
-.lens-card.theme-0 .lens-panel-right{background:#EEF3FA;color:#0D2040}
-.lens-card.theme-1 .lens-panel-right{background:#E8F5F0;color:#073D2B}
-.lens-card.theme-2 .lens-panel-right{background:#FBF0EC;color:#6B1F0E}
-.lens-card.theme-3 .lens-panel-right{background:#F3EEF9;color:#2E1A4A}
-.lens-card.theme-4 .lens-panel-right{background:#F5F5F4;color:#1C1917}
-.lens-card.theme-5 .lens-panel-right{background:#FEF3E9;color:#5A2506}
-
-/* Carousel controls */
-.carousel-controls{
+/* ── CAROUSEL CSS (was missing definitions) ── */
+.carousel-wrap{
+  position:relative;
   display:flex;
   align-items:center;
-  gap:16px;
-  margin-top:8px;
+  gap:8px;
+  margin-bottom:16px;
+  justify-content:center;
 }
-
-.carousel-btn{
-  width:36px;height:36px;
-  border-radius:50%;
-  border:1px solid var(--rule);
-  background:var(--white);
-  cursor:pointer;
-  font-size:14px;
-  color:var(--ink3);
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.15s;
-  flex-shrink:0;
-}
-.carousel-btn:hover{
-  background:var(--ink);
-  color:var(--white);
-  border-color:var(--ink);
-}
-.carousel-btn:disabled{opacity:0.3;cursor:default}
-
-.carousel-dots{
-  display:flex;
-  align-items:center;
-  gap:6px;
+.carousel-viewport{
+  overflow:hidden;
   flex:1;
+  display:flex;
+  justify-content:center;
 }
-
-.carousel-dot{
-  width:6px;height:6px;
-  border-radius:50%;
-  background:var(--faint);
-  border:none;cursor:pointer;
-  transition:all 0.2s;
-  padding:0;
+.carousel-track{
+  display:flex;
+  transition:transform 0.35s cubic-bezier(.25,.8,.25,1);
 }
-.carousel-dot.active{
-  width:20px;
-  border-radius:3px;
-  background:var(--ink);
-}
-
-.carousel-counter{
-  font-family:var(--mono);
-  font-size:9px;
+.carousel-btn{
+  flex-shrink:0;
+  width:36px;height:36px;
+  background:none;
+  border:1px solid var(--rule);
   color:var(--mid);
-  letter-spacing:0.06em;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  font-size:15px;
+  transition:all 0.15s;
+  border-radius:0;
+}
+.carousel-btn:hover{border-color:var(--ink);color:var(--ink)}
+.carousel-btn:disabled{opacity:0.2;cursor:not-allowed}
+.carousel-dots{
+  display:flex;gap:6px;margin-bottom:32px;
+  justify-content:center;
+}
+.carousel-dot{
+  width:20px;height:2px;
+  background:var(--rule);
+  border:none;padding:0;cursor:pointer;
+  transition:all 0.15s;
+}
+.carousel-dot.active{background:var(--accent);width:28px}
+
+/* Sit with this take echo */
+.sit-take-echo{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:13px;
+  color:var(--mid);
+  margin-bottom:14px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--rule);
+  line-height:1.5;
 }
 
 /* Sit with this */
@@ -1377,6 +1406,18 @@ nav{
   max-width:520px;
 }
 
+/* Closing take echo */
+.closing-take-echo{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:13px;
+  color:var(--faint);
+  margin-bottom:16px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--rule);
+  line-height:1.5;
+}
+
 /* Closing line */
 .closing-line{
   margin-top:40px;
@@ -1389,7 +1430,7 @@ nav{
 .closing-text{
   font-family:var(--serif);
   font-style:italic;
-  font-size:16px;
+  font-size:22px;
   color:var(--mid);
   line-height:1.6;
 }
@@ -1435,7 +1476,7 @@ nav{padding:16px var(--px)}
 .hero{padding:var(--hero-pt) var(--px) 48px}
 .input-section{padding:0 var(--px) 48px}
 .thinking-state{padding:0 var(--px) 48px}
-.results-section{padding:0 var(--px) 80px}
+.results-section{padding:0 var(--px) 32px}
 .leads-section{padding:0 var(--px) 80px}
 .section-divider{padding:0 var(--px)}
 
@@ -1450,7 +1491,7 @@ nav{padding:16px var(--px)}
 }
 
 /* Score scales down on small screens */
-/* score-num now hidden, stars used instead */
+.score-num{font-size:clamp(52px,15vw,88px)}
 
 /* Blind spot statement scales */
 .blind-spot-statement{font-size:clamp(18px,4vw,32px)}
@@ -1478,7 +1519,7 @@ nav{padding:16px var(--px)}
   .action-btn{display:flex;align-items:center;justify-content:center}
 
   /* Share card full width */
-  .share-card{width:92vw;padding:28px 20px}
+  .share-card{width:92vw;padding:24px 20px 20px}
 
   /* Leads title smaller */
   .leads-title{font-size:clamp(20px,5vw,32px)}
@@ -1518,7 +1559,7 @@ nav{padding:16px var(--px)}
   .steal-text{font-size:16px}
 
   /* Share card */
-  .share-card{padding:24px 16px}
+  .share-card{padding:20px 16px 16px}
   .share-assumption-text{font-size:15px}
   .share-score-num{font-size:40px}
 
@@ -1529,28 +1570,33 @@ nav{padding:16px var(--px)}
   /* Lens card thumbnail shorter on phone */
   .lens-thumb{height:80px}
 
-  /* Closing line */
-  .closing-text{font-size:14px}
+  /* Closing take echo */
+.closing-take-echo{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:13px;
+  color:var(--faint);
+  margin-bottom:16px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--rule);
+  line-height:1.5;
+}
+
+/* Closing line */
+  .closing-text{font-size:18px}
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-light.svg"
-         alt="Axiom"
-         style="height:28px;width:auto;display:block"
-         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-light.svg" alt="Axiom" class="nav-axiom-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
     <span style="display:none;font-family:var(--serif);font-size:20px;color:var(--ink);letter-spacing:0.02em">Axiom</span>
   </a>
   <div class="nav-tool" style="padding:0;border:none;background:none">
-    <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-logo.svg"
-         alt="Reframe by Axiom"
-         style="height:22px;width:auto;display:block"
-         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <img src="https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-logo.svg" alt="Reframe by Axiom" class="nav-reframe-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
     <span style="display:none;align-items:center;gap:8px;font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid)"><div class="nav-tool-dot"></div>Reframe</span>
   </div>
 </nav>
@@ -1571,7 +1617,6 @@ nav{padding:16px var(--px)}
     <button class="trigger" onclick="setTrigger(this,'A view you\'d defend at dinner')">A view you'd defend at dinner</button>
     <button class="trigger" onclick="setTrigger(this,'Something most people get wrong')">Something most people get wrong</button>
     <button class="trigger" onclick="setTrigger(this,'An opinion you formed quickly')">An opinion you formed quickly</button>
-    <button class="trigger" onclick="setTrigger(this,'A position you know has holes')">A position you know has holes</button>
   </div>
 
   <!-- Main input -->
@@ -1718,26 +1763,18 @@ nav{padding:16px var(--px)}
       <span class="block-title">Defensibility score</span>
     </div>
     <div class="score-display">
-      <div class="score-stars" id="scoreStars">
-        <span class="score-star" id="star1">★</span>
-        <span class="score-star" id="star2">★</span>
-        <span class="score-star" id="star3">★</span>
-        <span class="score-star" id="star4">★</span>
-        <span class="score-star" id="star5">★</span>
+      <div class="star-row" id="starRow">
+        <span class="star" data-i="1">★</span>
+        <span class="star" data-i="2">★</span>
+        <span class="star" data-i="3">★</span>
+        <span class="star" data-i="4">★</span>
+        <span class="star" data-i="5">★</span>
       </div>
-      <div class="score-label">How well this holds up</div>
-      <div class="score-bar-track"><div class="score-bar-fill" id="scoreBar"></div></div>
-      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-label" id="scoreNum" style="display:none"></div>
       <div class="score-elevate" id="scoreElevate"></div>
     </div>
   </div>
 
-  <!-- Actions -->
-  <div class="result-actions" id="resultActions">
-    <button class="action-btn action-primary" onclick="openShare()">Share this result</button>
-    <button class="action-btn action-secondary" onclick="resetTool()">Test another take</button>
-    <button class="action-btn action-secondary" onclick="window.location.href='#'">Back to Axiom</button>
-  </div>
 
 </div>
 
@@ -1748,18 +1785,15 @@ nav{padding:16px var(--px)}
     <div class="leads-title">Where this leads</div>
   </div>
 
-  <p class="leads-subtitle">Three things worth your time.<br><em>Pick one. That's enough.</em></p>
-
   <!-- Carousel -->
   <div class="carousel-wrap" id="carouselWrap">
-    <div class="carousel-stage" id="carouselStage"></div>
-    <div class="carousel-controls">
-      <button class="carousel-btn" id="carouselPrev" onclick="carouselMove(-1)" aria-label="Previous">&#8592;</button>
-      <button class="carousel-btn" id="carouselNext" onclick="carouselMove(1)" aria-label="Next">&#8594;</button>
-      <div class="carousel-dots" id="carouselDots"></div>
-      <span class="carousel-counter" id="carouselCounter">1 / 3</span>
+    <button class="carousel-btn carousel-prev" id="carouselPrev" onclick="carouselMove(-1)" aria-label="Previous">&#8592;</button>
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="carouselTrack"></div>
     </div>
+    <button class="carousel-btn carousel-next" id="carouselNext" onclick="carouselMove(1)" aria-label="Next">&#8594;</button>
   </div>
+  <div class="carousel-dots" id="carouselDots"></div>
 
   <!-- Sit with this — after carousel -->
   <div class="sit-block" id="sitBlock">
@@ -1788,57 +1822,73 @@ nav{padding:16px var(--px)}
 
 <!-- SHARE MODAL -->
 <div class="share-modal" id="shareModal">
-  <div class="share-shell">
+  <div class="share-card">
+    <button class="share-close" onclick="closeShare()">Close ×</button>
 
-    <!-- Top bar -->
-    <div class="share-topbar">
-      <span class="share-topbar-title">Share your result</span>
-      <button class="share-close" onclick="closeShare()">Close ×</button>
+    <!-- Arrow nav — centered -->
+    <div class="share-nav">
+      <button class="share-nav-btn" id="shareNavPrev" onclick="shareSlideMove(-1)">&#8592;</button>
+      <div class="share-nav-dots" id="shareNavDots"></div>
+      <button class="share-nav-btn" id="shareNavNext" onclick="shareSlideMove(1)">&#8594;</button>
     </div>
 
-    <!-- Card type selector -->
-    <div class="share-card-nav" id="shareCardNav">
-      <button class="share-nav-btn active" onclick="setShareCard(0,this)">Assumption</button>
-      <button class="share-nav-btn" onclick="setShareCard(1,this)">Take sharpened</button>
-      <button class="share-nav-btn" onclick="setShareCard(2,this)">Strongest critic</button>
-      <button class="share-nav-btn" onclick="setShareCard(3,this)">Sit with this</button>
-      <button class="share-nav-btn" onclick="setShareCard(4,this)">Score</button>
-      <button class="share-nav-btn" onclick="setShareCard(5,this)">The closer</button>
+    <!-- Hidden data slides (source of truth, not shown) -->
+    <div style="display:none">
+      <div id="shareTake0"></div>
+      <div id="shareTake1"></div><div id="shareTake2"></div>
+      <div id="shareTake3"></div><div id="shareTake4"></div>
+      <div id="shareTake5"></div><div id="shareTake6"></div>
+      <div id="shareAssumption"></div>
+      <div id="shareScore"></div>
+      <div id="shareOrigins"></div>
+      <div id="shareSteelman"></div>
+      <div id="shareCounter"></div>
+      <div id="shareReframe"></div>
+      <div id="shareSitWith"></div>
+      <div id="shareClosingLine"></div>
     </div>
 
-    <!-- Card preview -->
-    <div class="share-card-wrap">
-      <div class="share-card fmt-square" id="shareCard">
-        <div class="sc-accent-bar"></div>
-        <div class="sc-inner" id="scInner">
-          <!-- Populated by setShareCard() -->
-        </div>
+    <!-- Live canvas preview -->
+    <div class="share-preview-wrap">
+      <canvas id="sharePreviewCanvas" class="share-preview-canvas"></canvas>
+    </div>
+
+    <!-- Share actions -->
+    <div class="share-actions">
+
+      <!-- Instagram Post group -->
+      <div class="share-btn-group" id="instaPostGroup">
+        <button class="share-dl-btn share-dl-insta share-mode-btn" onclick="setShareMode('post')" id="btnPost">
+          <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Post
+        </button>
+        <button class="share-dl-arrow" id="dlPost" onclick="downloadCurrentCard('post')" title="Download post">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </button>
       </div>
-    </div>
 
-    <!-- Format toggle -->
-    <div class="share-fmt-row">
-      <span class="share-fmt-label">Format</span>
-      <button class="share-fmt-btn active" onclick="setShareFmt('square',this)">Square</button>
-      <button class="share-fmt-btn" onclick="setShareFmt('story',this)">Story</button>
-    </div>
+      <!-- Instagram Story group -->
+      <div class="share-btn-group" id="instaStoryGroup">
+        <button class="share-dl-btn share-dl-story share-mode-btn" onclick="setShareMode('story')" id="btnStory">
+          <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Story
+        </button>
+        <button class="share-dl-arrow" id="dlStory" onclick="downloadCurrentCard('story')" title="Download story">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </button>
+      </div>
 
-    <!-- Actions -->
-    <div class="share-action-row">
-      <button class="share-dl-btn" id="shareDlBtn" onclick="downloadCard()">
-        ↓ Download image
-      </button>
-      <button class="share-x-btn" id="shareXBtn" onclick="postOnX()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
+      <!-- X -->
+      <button class="share-dl-btn share-dl-x" onclick="postOnX()" title="Post on X">
+        <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         Post on X
       </button>
-      <span class="share-hint">Download → open Instagram → share from camera roll</span>
+
     </div>
 
   </div>
 </div>
+
 
 <script>
 // ── STATE ──
@@ -1846,9 +1896,6 @@ let currentScore = 0;
 let currentTake = '';
 let currentAssumption = '';
 let selectedConf = 'Fairly sure';
-let carouselIndex = 0;
-let carouselTotal = 0;
-let carouselCards = [];
 
 // ── UTILS ──
 function updateChar(){
@@ -1904,7 +1951,11 @@ function streamBlock(el, text, delay){
   return new Promise(resolve => {
     setTimeout(() => {
       el.innerHTML = '';
-      el.closest('.result-block').classList.add('streamed');
+      const _blk = el.closest('.result-block');
+      _blk.style.opacity = '';
+      _blk.style.transform = '';
+      void _blk.offsetWidth;
+      _blk.classList.add('streamed');
       const cursor = document.createElement('span');
       cursor.className = 'stream-cursor';
       el.appendChild(cursor);
@@ -2108,19 +2159,19 @@ ${urlContext ? `Source: ${urlContext}` : ''}
 Confidence: ${selectedConf}
 
 Output rules:
-- origins: exactly 2 sentences max. Start "This view has roots in..."
-- steelman: exactly 2 sentences max. Start "The case for this is..."
+- origins: MAX 2 sentences. Start "This view has roots in..."
+- steelman: MAX 2 sentences. Start "The case for this is..."
 - assumption: ONE sentence naming the core logical gap. Start "You're assuming that..."
-- counter: exactly 2 sentences. Name a specific thinker. Be concise.
-- reframe: 2 sentences. The defensible upgrade. Match their register.
+- counter: MAX 2 sentences. Name a thinker who would push back.
+- reframe: MAX 2 sentences. The defensible upgrade.
 - score: integer 28-71
-- score_note: one sentence on what raises the score
-- sit_with_this: one question starting with "If" or "What if" — specific to this take
+- score_note: under 15 words
+- sit_with_this: one short question starting with "If" or "What if"
 - steal: their take at its sharpest, max 200 chars, no hashtags, no em-dashes
-- closing_line: one dry witty line specific to this take — the kind someone screenshots
-- lenses: exactly 3 items — deep cut (essay), counter (essay), unexpected (video/game/sim/doc)
-  Each lens: step, type, anchor (short), title (real specific title), source, format, tag, tag_color, why (one sentence)
-  No url field.
+- closing_line: under 20 words, dry and witty
+- lenses: exactly 6 items across these categories in this order: (1) deep cut essay, (2) counter essay, (3) unexpected video or documentary, (4) podcast episode, (5) book, (6) interactive tool or game (if a real one exists for this topic, otherwise a second book)
+  Each lens: step, type, anchor (3 words max), title (specific real title), source, format (Essay/Video/Documentary/Podcast/Book/Interactive), tag (2 words), tag_color, why (under 12 words)
+  No url field. Only suggest real, verifiable titles that exist.
 
 Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 {
@@ -2137,7 +2188,10 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
   "lenses": [
     {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#1B3F6B","why":""},
     {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#C24B2A","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":""}
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Podcast","tag":"","tag_color":"#0D9488","why":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Book","tag":"","tag_color":"#1C1917","why":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Interactive","tag":"","tag_color":"#B8520A","why":""}
   ]
 }`;
 
@@ -2174,7 +2228,9 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 
     // Block 2 — Assumption centrepiece
     await new Promise(r => setTimeout(r, 500));
-    document.getElementById('block2').classList.add('streamed');
+    const _b2 = document.getElementById('block2');
+    _b2.style.opacity = ''; _b2.style.transform = ''; void _b2.offsetWidth;
+    _b2.classList.add('streamed');
     const assumptionEl = document.getElementById('block2Statement');
     assumptionEl.innerHTML = '';
     scrollTo(document.getElementById('block2'));
@@ -2191,33 +2247,39 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     // Block 4 — Your take sharpened
     await streamBlock(document.getElementById('block5Content'), p.reframe, 500);
 
-    // Sit with this — right after reframe, before score
-    await new Promise(r => setTimeout(r, 600));
-    const sitBlock = document.getElementById('sitBlock');
-    sitBlock.classList.add('revealed');
-    document.getElementById('sitPrompt').textContent = p.sit_with_this;
-    scrollTo(sitBlock);
-
     // Score
     await new Promise(r => setTimeout(r, 800));
-    document.getElementById('block6').classList.add('streamed');
+    const _b6 = document.getElementById('block6');
+    _b6.style.opacity = ''; _b6.style.transform = ''; void _b6.offsetWidth;
+    _b6.classList.add('streamed');
     scrollTo(document.getElementById('block6'));
     await new Promise(r => setTimeout(r, 300));
 
-    // Convert 28-71 score to 1-5 stars
-    const target = p.score;
-    const starCount = target <= 35 ? 1 : target <= 45 ? 2 : target <= 55 ? 3 : target <= 65 ? 4 : 5;
-    document.getElementById('scoreNum').textContent = target;
-    document.getElementById('scoreElevate').textContent = p.score_note;
-    // Animate stars in one by one
-    for(let s = 1; s <= 5; s++){
+    // Convert 0-100 score to 1-5 stars
+    const starCount = Math.round((p.score / 100) * 5);
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((s, i) => {
       setTimeout(() => {
-        const starEl = document.getElementById('star' + s);
-        if(s <= starCount) starEl.classList.add('filled');
-      }, s * 180);
-    }
+        s.classList.add('lit');
+        s.classList.add('pop');
+        setTimeout(() => s.classList.remove('pop'), 200);
+      }, i * 180);
+    });
+    // Grey out stars beyond score
+    setTimeout(() => {
+      stars.forEach((s, i) => {
+        if(i >= starCount) s.classList.remove('lit');
+      });
+      document.getElementById('scoreElevate').textContent = p.score_note;
+      document.getElementById('scoreNum').textContent = p.score; // hidden but kept for share modal
+    }, stars.length * 180 + 300);
 
-    setShareData(p, take);
+    // shareTake populated in openShare()
+    document.getElementById('shareAssumption').textContent = p.assumption;
+    document.getElementById('shareScore').textContent      = p.score;
+
+    // Show result action buttons
+  // resultActions removed — buttons only at end
 
     // Render carousel + closing line
     await new Promise(r => setTimeout(r, 1000));
@@ -2227,14 +2289,11 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     document.getElementById('thinkingState').classList.remove('active');
     document.getElementById('inputSection').style.display = 'block';
     document.getElementById('submitBtn').disabled = false;
-    // SyntaxError = JSON truncated or malformed — not a content refusal
-    // Show a retry notice rather than a refusal message
-    if(e instanceof SyntaxError){
-      showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Something went wrong</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">The response got cut off. Your take is still there — try again and it should work.</div>`, 'neutral');
-    } else {
-      showError();
-    }
-    console.error(e);
+    console.error('Reframe error:', e, e.stack);
+    // Show the actual error to help debug
+    const errType = e.constructor.name || 'Unknown';
+    const errMsg = e.message || String(e);
+    showNotice(`<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">${errType}</div><div style="font-size:13px;font-family:var(--mono);color:var(--ink3);line-height:1.6;word-break:break-all">${errMsg}</div>`, 'neutral');
   }
 }
 
@@ -2263,175 +2322,216 @@ function clearNotice(){
   document.getElementById('inputNotice').innerHTML = '';
 }
 
+// ── RENDER LEADS ──
+// Map source names to Unsplash-style topic images for thumbnails
 function getThumbUrl(lens){
+  // Use Unsplash source API for relevant topic imagery
   const topicMap = {
-    'Essay':'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=600&q=70',
-    'Book':'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=70',
-    'Video':'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=70',
-    'Podcast':'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=600&q=70',
-    'Documentary':'https://images.unsplash.com/photo-1536240478700-b869ad10e128?w=600&q=70',
-    'Game':'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=600&q=70',
-    'Simulation':'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=70',
-    'Interactive':'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70',
+    'Essay':'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=400&q=60',
+    'Book':'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=60',
+    'Video':'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=60',
+    'Podcast':'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&q=60',
+    'Video or Podcast':'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&q=60',
+    'Documentary':'https://images.unsplash.com/photo-1536240478700-b869ad10e128?w=400&q=60',
   };
-  return topicMap[lens.format] || topicMap['Essay'];
+  return topicMap[lens.format] || 'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=400&q=60';
 }
 
 function getFaviconUrl(source){
+  // Extract domain for favicon from known sources
   const domainMap = {
-    'The Ken':'the-ken.com','Mint':'livemint.com',
-    'The Economist':'economist.com','The Atlantic':'theatlantic.com',
-    'New Yorker':'newyorker.com','Substack':'substack.com',
-    'YouTube':'youtube.com','Netflix':'netflix.com',
-    'Spotify':'spotify.com','The Guardian':'theguardian.com',
-    'Bloomberg':'bloomberg.com','Harvard Business Review':'hbr.org',
-    'Financial Times':'ft.com','Wired':'wired.com',
-    'TechCrunch':'techcrunch.com','Nature':'nature.com',
-    'Reuters':'reuters.com','BBC':'bbc.com',
-    'Scroll':'scroll.in','The Wire':'thewire.in',
+    'The Ken':'the-ken.com',
+    'Mint':'livemint.com',
+    'The Economist':'economist.com',
+    'The Atlantic':'theatlantic.com',
+    'New Yorker':'newyorker.com',
+    'Substack':'substack.com',
+    'YouTube':'youtube.com',
+    'Netflix':'netflix.com',
+    'Spotify':'spotify.com',
+    'Hindustan Times':'hindustantimes.com',
+    'Times of India':'timesofindia.com',
+    'The Guardian':'theguardian.com',
+    'Bloomberg':'bloomberg.com',
+    'Forbes':'forbes.com',
+    'Harvard Business Review':'hbr.org',
+    'Financial Times':'ft.com',
+    'Wired':'wired.com',
+    'TechCrunch':'techcrunch.com',
+    'Nature':'nature.com',
+    'Reuters':'reuters.com',
+    'BBC':'bbc.com',
+    'Al Jazeera':'aljazeera.com',
+    'Scroll':'scroll.in',
+    'The Wire':'thewire.in',
+    'Pitchfork':'pitchfork.com',
+    'Rolling Stone':'rollingstone.com',
   };
+
+  // Try to find a matching domain
   for(const [name, domain] of Object.entries(domainMap)){
-    if(source.toLowerCase().includes(name.toLowerCase()))
+    if(source.toLowerCase().includes(name.toLowerCase())){
       return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+    }
   }
+  // Generic fallback — extract first letters
   return null;
 }
 
 function getInitials(source){
-  return source.split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2);
-}
-
-function updateCarouselStates(){
-  const total = carouselCards.length;
-  if(!total) return;
-  carouselCards.forEach((card, i) => {
-    let state;
-    if(i === carouselIndex) state = 'active';
-    else if(i === (carouselIndex + 1) % total) state = 'next';
-    else if(i === (carouselIndex - 1 + total) % total) state = 'prev';
-    else state = 'hidden';
-    card.setAttribute('data-state', state);
-  });
-  // Dots
-  document.querySelectorAll('.carousel-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === carouselIndex);
-  });
-  // Counter
-  const counter = document.getElementById('carouselCounter');
-  if(counter) counter.textContent = `${carouselIndex + 1} / ${total}`;
-  // Prev/Next buttons
-  const prev = document.getElementById('carouselPrev');
-  const next = document.getElementById('carouselNext');
-  if(prev) prev.disabled = total <= 1;
-  if(next) next.disabled = total <= 1;
-}
-
-function carouselMove(dir){
-  if(!carouselTotal) return;
-  carouselIndex = (carouselIndex + dir + carouselTotal) % carouselTotal;
-  updateCarouselStates();
+  return source.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0,2);
 }
 
 function renderLeads(p){
   if(!p.lenses || !p.lenses.length) return;
 
   const section = document.getElementById('leadsSection');
+  section.style.opacity = '';
+  section.style.animation = '';
+  section.style.transition = '';
   section.classList.add('active');
+  section.style.opacity = '0';
+  requestAnimationFrame(() => {
+    section.style.transition = 'opacity 0.5s ease';
+    section.style.opacity = '1';
+  });
 
-  const stage = document.getElementById('carouselStage');
+  const track = document.getElementById('carouselTrack');
   const dotsEl = document.getElementById('carouselDots');
-  stage.innerHTML = '';
+  track.innerHTML = '';
   dotsEl.innerHTML = '';
-  carouselCards = [];
   carouselIndex = 0;
   carouselTotal = p.lenses.length;
 
-  const themes = [0,1,2,3,4,5];
   const interactiveFormats = ['Video','Game','Simulation','Interactive','Documentary'];
+  const themes = [0,1,2,3,4,5];
+
+  // Measure container width to set card size
+  const outerWidth = Math.max(280, document.getElementById('carouselWrap').offsetWidth - 100);
+  const cardWidth = Math.min(outerWidth, 320);
 
   p.lenses.forEach((lens, i) => {
     const isInteractive = interactiveFormats.includes(lens.format);
     const card = document.createElement('a');
-    card.className = `lens-card theme-${themes[i % 6]}`;
-    card.setAttribute('data-state', i === 0 ? 'active' : i === 1 ? 'next' : 'hidden');
-    card.href = '#';
+    card.className = `lens-card theme-${themes[i % 6]}${isInteractive ? ' is-interactive' : ''}`;
+    card.style.cssText = `width:${cardWidth}px;min-width:${cardWidth}px;margin-right:16px;`;
+    // Build a direct or fallback URL for the lens
+    const knownDomains = {
+      'The Economist':'economist.com','The Atlantic':'theatlantic.com',
+      'New Yorker':'newyorker.com','The New Yorker':'newyorker.com',
+      'New York Times':'nytimes.com','NYT':'nytimes.com',
+      'The Guardian':'theguardian.com','BBC':'bbc.com',
+      'Financial Times':'ft.com','Bloomberg':'bloomberg.com',
+      'Harvard Business Review':'hbr.org','HBR':'hbr.org',
+      'Wired':'wired.com','TechCrunch':'techcrunch.com',
+      'The Atlantic Monthly':'theatlantic.com',
+      'Substack':'substack.com','Medium':'medium.com',
+      'YouTube':'youtube.com','Netflix':'netflix.com',
+      'Spotify':'open.spotify.com',
+      'Rolling Stone':'rollingstone.com','Pitchfork':'pitchfork.com',
+      'The Ken':'the-ken.com','Scroll':'scroll.in',
+      'The Wire':'thewire.in','Mint':'livemint.com',
+      'Reuters':'reuters.com','AP':'apnews.com',
+      'Washington Post':'washingtonpost.com','The Washington Post':'washingtonpost.com',
+      'Vox':'vox.com','FiveThirtyEight':'fivethirtyeight.com',
+      'Jacobin':'jacobinmag.com','Foreign Affairs':'foreignaffairs.com',
+      'Aeon':'aeon.co','Quillette':'quillette.com',
+      'Nautilus':'nautil.us','Laphams Quarterly':'laphamsquarterly.org',
+    };
+    let cardDomain = null;
+    for(const [name, domain] of Object.entries(knownDomains)){
+      if(lens.source && lens.source.toLowerCase().includes(name.toLowerCase())){
+        cardDomain = domain; break;
+      }
+    }
+    const searchQ = encodeURIComponent('"' + lens.title + '"');
+    card.href = cardDomain
+      ? 'https://' + cardDomain + '/search?q=' + encodeURIComponent(lens.title)
+      : 'https://duckduckgo.com/?q=' + searchQ;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
     const thumbUrl = getThumbUrl(lens);
     const faviconUrl = getFaviconUrl(lens.source);
     const initials = getInitials(lens.source);
+
     const logoHtml = faviconUrl
       ? `<img src="${faviconUrl}" alt="${lens.source}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
         + `<span class="lens-source-logo-fallback" style="display:none">${initials}</span>`
       : `<span class="lens-source-logo-fallback">${initials}</span>`;
 
-    const playOverlay = isInteractive
-      ? `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px;pointer-events:none;">▶</div>` : '';
+    // Interactive cards get a bigger thumb + play icon overlay
+    const thumbExtra = isInteractive
+      ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+           <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px;">▶</div>
+         </div>`
+      : '';
 
     card.innerHTML = `
-      <div class="lens-panel-left">
-        <img class="lens-panel-bg" src="${thumbUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
-        <div class="lens-panel-overlay"></div>
+      <div class="lens-thumb" style="${isInteractive ? 'height:150px' : ''}">
+        <img class="lens-thumb-img" src="${thumbUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
+        <div class="lens-thumb-overlay"></div>
+        ${thumbExtra}
         <div class="lens-source-logo">${logoHtml}</div>
-        <span class="lens-card-format">${lens.format}</span>
-        ${playOverlay}
-        <div class="lens-card-step">${lens.step}</div>
-        <div class="lens-card-type">${lens.type}</div>
+        <span class="lens-format-badge">${lens.format}</span>
+        <span class="lens-step-label">${lens.step}</span>
+        <span class="lens-arrow-icon">↗</span>
       </div>
-      <div class="lens-panel-right">
-        <div>
-          <div class="lens-anchor">${lens.anchor}</div>
-          <div class="lens-title">${lens.title}</div>
-        </div>
-        <div>
-          <div class="lens-source-line">${lens.source}</div>
-          <div class="lens-why">${lens.why}</div>
-          <div class="lens-card-bottom">
-            <span class="lens-tag-pill">${lens.tag}</span>
-            <span class="lens-open-icon">↗</span>
-          </div>
-        </div>
+      <div class="lens-body">
+        <span class="lens-type-label">${lens.type}</span>
+        <span class="lens-anchor">${lens.anchor}</span>
+        <div class="lens-title">${lens.title}</div>
+        <div class="lens-source-line">${lens.source}</div>
+        <div class="lens-why">${lens.why}</div>
+        <span class="lens-tag-pill">${lens.tag}</span>
       </div>`;
 
-    stage.appendChild(card);
-    carouselCards.push(card);
+    track.appendChild(card);
 
     // Dot
     const dot = document.createElement('button');
     dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', `Card ${i+1}`);
-    dot.onclick = () => { carouselIndex = i; updateCarouselStates(); };
+    dot.setAttribute('aria-label', `Go to card ${i+1}`);
+    dot.onclick = () => { carouselIndex = i - 1; carouselMove(1); };
     dotsEl.appendChild(dot);
   });
 
-  // Init after paint
+  // Init carousel position after paint
   requestAnimationFrame(() => {
-    updateCarouselStates();
-    scrollTo(section);
+    requestAnimationFrame(() => {
+      updateCarousel();
+      scrollTo(section);
+    });
   });
 
-  // Sit with this
+  // Sit with this — reveals inside leads section
   setTimeout(() => {
     const sit = document.getElementById('sitBlock');
-    sit.classList.add('revealed');
+    sit.style.opacity = '';
+    sit.style.animation = '';
+    void sit.offsetWidth;
     document.getElementById('sitPrompt').textContent = p.sit_with_this;
+    sit.classList.add('revealed');
     scrollTo(sit);
-  }, 700);
+  }, 600);
 
   // Sassy closing line
   setTimeout(() => {
     const cl = document.getElementById('closingLine');
-    cl.classList.add('revealed');
+    cl.style.opacity = ''; cl.style.animation = ''; void cl.offsetWidth;
     document.getElementById('closingText').textContent = p.closing_line;
+    cl.classList.add('revealed');
     scrollTo(cl);
-  }, 1500);
+  }, 1400);
 
   // Leads action buttons
   setTimeout(() => {
     const la = document.getElementById('leadsActions');
-    if(la) la.classList.add('streamed');
-  }, 2000);
+    if(la){
+      la.style.opacity = ''; la.style.transform = ''; void la.offsetWidth;
+      la.classList.add('streamed');
+    }
+  }, 1800);
 }
 
 function copySteal(){
@@ -2444,161 +2544,35 @@ function copySteal(){
 }
 
 // ── SHARE ──
-let shareData = {};
-let shareCardIndex = 0;
-let shareFmt = 'square';
-
 function openShare(){
+  const g = id => document.getElementById(id)?.textContent || '';
+  const s = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  // Populate content
+  s('shareOrigins',     g('block0Content'));
+  s('shareSteelman',    g('block1Content'));
+  s('shareCounter',     g('block3Content'));
+  s('shareReframe',     g('block5Content'));
+  s('shareSitWith',     g('sitPrompt'));
+  s('shareClosingLine', g('closingText'));
+  // Populate take echo on every slide
+  const takeStr = currentTake ? '"' + currentTake + '"' : '';
+  for(let i = 0; i < 7; i++){
+    const el = document.getElementById('shareTake' + i);
+    if(el) el.textContent = takeStr;
+  }
+  // shareAssumption and shareScore already set during run
+  initShareSlides();
   document.getElementById('shareModal').classList.add('open');
-  setShareCard(0, document.querySelector('.share-nav-btn'));
 }
+function closeShare(){ document.getElementById('shareModal').classList.remove('open') }
 
-function closeShare(){
-  document.getElementById('shareModal').classList.remove('open');
-}
-
-function setShareData(p, take){
-  shareData = {
-    take: take,
-    assumption: p.assumption || '',
-    reframe: p.reframe || '',
-    counter: p.counter || '',
-    sit: p.sit_with_this || '',
-    score: p.score || 0,
-    score_note: p.score_note || '',
-    closing: p.closing_line || ''
-  };
-}
-
-function setShareCard(idx, btn){
-  shareCardIndex = idx;
-  document.querySelectorAll('.share-nav-btn').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-
-  const card = document.getElementById('shareCard');
-  const inner = document.getElementById('scInner');
-  const d = shareData;
-
-  // Reset card modifiers
-  card.className = `share-card fmt-${shareFmt}`;
-
-  const isLight = shareCardIndex === 3; // sit card = light bg
-  const isSassy = shareCardIndex === 5; // sassy = accent bg
-  const logoSrc = isLight
-    ? 'https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-logo-dark.svg'
-    : 'https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/reframe-logo.svg';
-  const axiomSrc = isLight
-    ? 'https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-dark.svg'
-    : 'https://raw.githubusercontent.com/ario-labs2030/axiom-web/main/assets/logos/axiom-light.svg';
-  const brandHtml = `
-    <div class="sc-brand">
-      <img src="${axiomSrc}" alt="Axiom" style="height:18px;width:auto;opacity:0.85" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:serif;font-size:14px;color:inherit;opacity:0.7\'>Axiom</span>')">
-      <img src="${logoSrc}" alt="Reframe by Axiom" style="height:16px;width:auto;opacity:0.75" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.5\'>Reframe by Axiom</span>')">
-    </div>`;
-
-  const takeQuote = d.take ? `<div class="sc-take">"${d.take.slice(0,120)}${d.take.length>120?'…':''}"</div>` : '';
-
-  const cards = [
-    // 0 — Assumption
-    () => `${takeQuote}
-      <div class="sc-label">You're assuming that —</div>
-      <div class="sc-main" style="font-size:${shareFmt==='story'?'18px':'20px'}">${d.assumption}</div>
-      ${brandHtml}`,
-
-    // 1 — Take sharpened
-    () => `${takeQuote}
-      <div class="sc-label">Your take, sharpened</div>
-      <div class="sc-main" style="font-size:${shareFmt==='story'?'16px':'18px'}">${d.reframe}</div>
-      ${brandHtml}`,
-
-    // 2 — Strongest critic
-    () => `${takeQuote}
-      <div class="sc-label">Your strongest critic would say</div>
-      <div class="sc-main" style="font-size:${shareFmt==='story'?'14px':'15px'}">${d.counter}</div>
-      ${brandHtml}`,
-
-    // 3 — Sit with this (light card)
-    () => {
-      card.classList.add('card-sit');
-      return `<div style="flex:1;display:flex;align-items:center;">
-        <div>
-          <div class="sc-label">Sit with this</div>
-          <div class="sc-main" style="font-size:${shareFmt==='story'?'20px':'22px'};color:var(--ink)">${d.sit}</div>
-        </div>
-      </div>
-      ${brandHtml}`;
-    },
-
-    // 4 — Score
-    () => `${takeQuote}
-      <div>
-        <div class="sc-label">Defensibility score</div>
-        <div class="sc-score-num">${d.score}</div>
-        <div class="sc-score-note">${d.score_note}</div>
-      </div>
-      ${brandHtml}`,
-
-    // 5 — Sassy closer (accent bg)
-    () => {
-      card.classList.add('card-sassy');
-      return `<div style="flex:1;display:flex;align-items:center;">
-        <div class="sc-main" style="font-size:${shareFmt==='story'?'20px':'22px'};font-style:italic;color:white">${d.closing}</div>
-      </div>
-      ${brandHtml}`;
-    }
-  ];
-
-  inner.innerHTML = cards[idx]();
-
-  // Update X button text
-  const xTexts = [d.assumption, d.reframe, d.counter, d.sit, `I scored ${d.score}/100 on Reframe by Axiom.`, d.closing];
-  document.getElementById('shareXBtn').onclick = () => postOnX(xTexts[idx]);
-}
-
-function setShareFmt(fmt, btn){
-  shareFmt = fmt;
-  document.querySelectorAll('.share-fmt-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const card = document.getElementById('shareCard');
-  card.classList.remove('fmt-square','fmt-story');
-  card.classList.add('fmt-'+fmt);
-  setShareCard(shareCardIndex, null);
-}
-
-function downloadCard(){
-  const card = document.getElementById('shareCard');
-  const btn = document.getElementById('shareDlBtn');
-  btn.textContent = 'Generating...';
-
-  // Scale factor: card is 400px displayed, output at 1080px
-  const scale = shareFmt === 'square' ? 1080/400 : 1080/225;
-
-  html2canvas(card, {
-    scale: scale,
-    useCORS: true,
-    backgroundColor: null,
-    logging: false
-  }).then(canvas => {
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `axiom-reframe-${['assumption','sharpened','critic','sit','score','closer'][shareCardIndex]}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-      btn.textContent = '✓ Downloaded';
-      setTimeout(() => btn.textContent = '↓ Download image', 2500);
-    }, 'image/png');
-  }).catch(() => {
-    btn.textContent = 'Try again';
-    setTimeout(() => btn.textContent = '↓ Download image', 2000);
+function copyShareText(){
+  const text = `My take scored ${currentScore}/100 on Axiom.\n\n${currentAssumption}\n\nReframe your thinking: axiom.so/reframe`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.share-copy-btn');
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = 'Copy for sharing', 2000);
   });
-}
-
-function postOnX(text){
-  const t = text || shareData.assumption;
-  const tweet = encodeURIComponent(t.slice(0,220) + '\n\nreframed on axiom.so/reframe');
-  window.open(`https://x.com/intent/tweet?text=${tweet}`, '_blank');
 }
 
 // ── RESET ──
@@ -2618,14 +2592,14 @@ function resetTool(){
     const el = document.getElementById(id);
     if(el) el.textContent = '';
   });
-  document.getElementById('resultActions') && document.getElementById('resultActions').classList.remove('streamed');
+  // resultActions removed from HTML
   const la = document.getElementById('leadsActions');
   if(la) la.classList.remove('streamed');
-  document.getElementById('scoreBar').style.width = '0';
+  // scoreBar replaced by stars
   document.getElementById('scoreNum').textContent = '—';
-  const stg = document.getElementById('carouselStage'); if(stg) stg.innerHTML = '';
+  document.getElementById('carouselTrack').innerHTML = '';
   document.getElementById('carouselDots').innerHTML = '';
-  carouselIndex = 0; carouselTotal = 0; carouselCards = [];
+  carouselIndex = 0; carouselTotal = 0;
   document.getElementById('sitBlock').classList.remove('revealed');
   document.getElementById('closingLine').classList.remove('revealed');
   document.getElementById('sitBlock').style.opacity = '0';
@@ -2637,6 +2611,245 @@ function resetTool(){
   document.querySelectorAll('.conf-opt').forEach(b => b.classList.remove('selected'));
   selectedConf = 'Fairly sure';
   scrollTo(document.querySelector('.hero'));
+}
+
+
+// ── CAROUSEL ──
+let carouselIndex = 0;
+let carouselTotal = 0;
+
+function updateCarousel(){
+  const track = document.getElementById('carouselTrack');
+  const wrap  = document.getElementById('carouselWrap');
+  const viewport = wrap.querySelector('.carousel-viewport');
+  const cards = track.querySelectorAll('.lens-card');
+  if(!cards.length) return;
+
+  const cardW = cards[0].offsetWidth + 16; // card + margin-right
+  track.style.transform = `translateX(-${carouselIndex * cardW}px)`;
+
+  // update dots
+  document.querySelectorAll('.carousel-dot').forEach((d,i) => {
+    d.classList.toggle('active', i === carouselIndex);
+  });
+
+  // reveal card
+  cards.forEach((c,i) => {
+    if(i === carouselIndex) c.classList.add('revealed');
+  });
+
+  // disable/enable prev-next
+  const prev = document.getElementById('carouselPrev');
+  const next = document.getElementById('carouselNext');
+  if(prev) prev.disabled = carouselIndex === 0;
+  if(next) next.disabled = carouselIndex >= carouselTotal - 1;
+}
+
+function carouselMove(dir){
+  carouselIndex = Math.max(0, Math.min(carouselTotal - 1, carouselIndex + dir));
+  updateCarousel();
+}
+
+// ── SHARE MODAL SLIDES ──
+let shareSlideIndex = 0;
+const SHARE_TOTAL = 7;
+
+function initShareSlides(){
+  const dotsEl = document.getElementById('shareNavDots');
+  if(!dotsEl) return;
+  dotsEl.innerHTML = '';
+  for(let i = 0; i < SHARE_TOTAL; i++){
+    const d = document.createElement('button');
+    d.className = 'share-nav-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i+1));
+    d.onclick = () => { shareSlideIndex = i - 1; shareSlideMove(1); };
+    dotsEl.appendChild(d);
+  }
+  shareSlideIndex = 0;
+  shareMode = 'post';
+  setShareMode('post');
+  updateShareSlides();
+}
+
+// Slide index → color scheme: 0=ink,1=off,2=ink,3=accent,4=off,5=accent,6=ink
+const SLIDE_MODES = ['ink','off','ink','accent','off','accent','ink'];
+
+function updateShareSlides(){
+  const track = document.getElementById('shareSlidesTrack');
+  if(!track) return;
+  track.style.transform = `translateX(-${shareSlideIndex * 100}%)`;
+
+  document.querySelectorAll('.share-nav-dot').forEach((d,i) => {
+    d.classList.toggle('active', i === shareSlideIndex);
+  });
+
+  const prev = document.getElementById('shareNavPrev');
+  const next = document.getElementById('shareNavNext');
+  if(prev) prev.disabled = shareSlideIndex === 0;
+  if(next) next.disabled = shareSlideIndex >= SHARE_TOTAL - 1;
+
+  // Update preview
+  requestAnimationFrame(renderSharePreview);
+}
+
+function shareSlideMove(dir){
+  shareSlideIndex = Math.max(0, Math.min(SHARE_TOTAL - 1, shareSlideIndex + dir));
+  updateShareSlides();
+}
+
+// ── SHARE MODAL STATE ──
+let shareMode = 'post'; // 'post' or 'story'
+
+function setShareMode(mode){
+  shareMode = mode;
+  document.getElementById('btnPost').classList.toggle('selected', mode === 'post');
+  document.getElementById('btnStory').classList.toggle('selected', mode === 'story');
+  const dlPost  = document.getElementById('dlPost');
+  const dlStory = document.getElementById('dlStory');
+  dlPost.classList.toggle('active',  mode === 'post');
+  dlStory.classList.toggle('active', mode === 'story');
+  renderSharePreview();
+}
+
+function downloadCurrentCard(format){
+  // Only active when mode is selected
+  if(format === 'post'  && shareMode !== 'post')  return;
+  if(format === 'story' && shareMode !== 'story') return;
+  const canvas = buildShareCanvas(format);
+  const link = document.createElement('a');
+  link.download = 'axiom-reframe-' + format + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// Kept for backward compat
+function downloadShareCard(format){ downloadCurrentCard(format); }
+
+function renderSharePreview(){
+  const canvas = buildShareCanvas(shareMode);
+  const preview = document.getElementById('sharePreviewCanvas');
+  if(!preview) return;
+  // Copy canvas to preview at display size
+  preview.width  = canvas.width;
+  preview.height = canvas.height;
+  const pctx = preview.getContext('2d');
+  pctx.drawImage(canvas, 0, 0);
+}
+
+function buildShareCanvas(format){
+  const isStory = format === 'story';
+  const W = 1080, H = isStory ? 1920 : 1080;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Get slide color scheme from hidden slide data
+  const SLIDE_BG    = ['#0A0A08','#F9F9F7','#0A0A08','#E8441A','#F9F9F7','#E8441A','#0A0A08'];
+  const SLIDE_TEXT  = ['#FFFFFF','#0A0A08','#FFFFFF','#FFFFFF','#0A0A08','#FFFFFF','#FFFFFF'];
+  const SLIDE_LABEL = ['#FF5C32','#E8441A','#FF5C32','rgba(255,255,255,0.65)','#E8441A','rgba(255,255,255,0.65)','#FF5C32'];
+  const bg    = SLIDE_BG[shareSlideIndex]    || '#0A0A08';
+  const textColor  = SLIDE_TEXT[shareSlideIndex]  || '#FFFFFF';
+  const labelColor = SLIDE_LABEL[shareSlideIndex] || '#FF5C32';
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Accent line top
+  ctx.fillStyle = bg === '#E8441A' ? 'rgba(255,255,255,0.3)' : '#E8441A';
+  ctx.fillRect(0, 0, W, 6);
+
+  const pad = 90;
+  const slide = shareSlideIndex;
+  const g = id => document.getElementById(id)?.textContent || '';
+
+  // Take echo at top
+  const takeText = currentTake ? '"' + currentTake + '"' : '';
+  if(takeText){
+    ctx.font = 'italic 26px Georgia, serif';
+    ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.3)' : 'rgba(255,255,255,0.3)';
+    const takeY = wrapTextReturn(ctx, takeText, pad, 72, W - pad*2, 34);
+    // divider line
+    ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.1)' : 'rgba(255,255,255,0.1)';
+    ctx.fillRect(pad, takeY + 10, W - pad*2, 1);
+  }
+
+  let y = isStory ? 360 : 250;
+
+  // Label
+  ctx.font = '500 20px monospace';
+  ctx.fillStyle = labelColor;
+  const slideLabels = ["YOU'RE ASSUMING —","WHERE THIS COMES FROM —","STRONGEST CASE FOR THIS —","YOUR CRITIC SAYS —","YOUR TAKE SHARPENED —","SIT WITH THIS —","REFRAME SAYS —"];
+  ctx.fillText(slideLabels[slide] || '', pad, y); y += 56;
+
+  // Main content — auto font size
+  const slideIds = [null,'shareOrigins','shareSteelman','shareCounter','shareReframe','shareSitWith','shareClosingLine'];
+  let mainText = '';
+  if(slide === 0){
+    mainText = g('shareAssumption');
+  } else {
+    mainText = g(slideIds[slide] || '');
+  }
+
+  // Auto font size: start at 44px, shrink to fit
+  let fontSize = 44;
+  const maxH = H - y - (isStory ? 280 : 200);
+  while(fontSize > 22){
+    ctx.font = 'italic ' + fontSize + 'px Georgia, serif';
+    const lines = measureLines(ctx, mainText, W - pad*2);
+    if(lines * (fontSize * 1.35) < maxH) break;
+    fontSize -= 2;
+  }
+  ctx.font = 'italic ' + fontSize + 'px Georgia, serif';
+  ctx.fillStyle = textColor;
+  y = wrapText(ctx, mainText, pad, y, W - pad*2, Math.round(fontSize * 1.35));
+
+  // Score stars if slide 0
+  if(slide === 0){
+    y += 50;
+    const starCount = Math.round((parseInt(g('shareScore') || '50') / 100) * 5);
+    ctx.font = '400 22px monospace';
+    ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.4)' : 'rgba(255,255,255,0.4)';
+    ctx.fillText('DEFENSIBILITY', pad, y); y += 44;
+    ctx.font = '64px Arial, sans-serif';
+    for(let si = 0; si < 5; si++){
+      ctx.fillStyle = si < starCount ? '#E8441A' : (bg === '#F9F9F7' ? 'rgba(10,10,8,0.15)' : 'rgba(255,255,255,0.15)');
+      ctx.fillText('★', pad + si * 74, y);
+    }
+  }
+
+  // Reframe logo bottom — text fallback since canvas can't load SVG reliably
+  const attrY = H - 60;
+  ctx.font = 'italic 400 22px Georgia, serif';
+  ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.4)' : 'rgba(255,255,255,0.4)';
+  ctx.fillText('Reframe', pad, attrY);
+  ctx.font = '400 14px monospace';
+  ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.3)' : 'rgba(255,255,255,0.3)';
+  ctx.fillText('by Axiom', pad + 76, attrY);
+
+  return canvas;
+}
+
+// Helper: count lines without drawing
+function measureLines(ctx, text, maxW){
+  if(!text) return 0;
+  const words = text.split(' ');
+  let line = '', lines = 1;
+  for(let n = 0; n < words.length; n++){
+    const test = line + words[n] + ' ';
+    if(ctx.measureText(test).width > maxW && n > 0){ line = words[n] + ' '; lines++; } else line = test;
+  }
+  return lines;
+}
+
+
+// ── POST ON X ──
+function postOnX(){
+  const score = document.getElementById('shareScore')?.textContent || '—';
+  const take = currentTake || '';
+  const assumption = currentAssumption || '';
+  const text = `My take scored ${score}/100 on Axiom Reframe.\n\n"${take}"\n\nThe assumption: ${assumption}\n\nReframe yours: axiom.so/reframe`;
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+  window.open(url, '_blank', 'noopener');
 }
 
 // Close modal on backdrop click
