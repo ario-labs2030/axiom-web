@@ -561,18 +561,36 @@ nav{
 .star-row{
   display:flex;
   justify-content:center;
-  gap:12px;
-  margin-bottom:16px;
+  gap:8px;
+  margin-bottom:12px;
 }
-.star{
-  font-size:48px;
-  color:var(--rule);
-  transition:color 0.3s ease, transform 0.2s ease;
-  line-height:1;
+.star-wrap{
+  position:relative;
   display:inline-block;
+  font-size:44px;
+  line-height:1;
+  width:1em;
 }
-.star.lit{ color:var(--accent); }
-.star.pop{ transform:scale(1.3); }
+.star-bg{
+  color:var(--rule);
+  display:block;
+}
+.star-fill{
+  position:absolute;
+  top:0;left:0;
+  color:var(--accent);
+  overflow:hidden;
+  width:0%;
+  display:block;
+  white-space:nowrap;
+}
+.star-fill::before{
+  content:"★";
+}
+.star-wrap.pop .star-fill{ animation: starPop 0.25s ease; }
+@keyframes starPop{
+  0%{transform:scale(1)} 50%{transform:scale(1.35)} 100%{transform:scale(1)}
+}
 
 .score-elevate{
   font-size:13px;
@@ -1328,8 +1346,7 @@ nav{
 .carousel-viewport{
   overflow:hidden;
   flex:1;
-  display:flex;
-  justify-content:center;
+  min-width:0;
 }
 .carousel-track{
   display:flex;
@@ -1764,13 +1781,14 @@ nav{padding:16px var(--px)}
     </div>
     <div class="score-display">
       <div class="star-row" id="starRow">
-        <span class="star" data-i="1">★</span>
-        <span class="star" data-i="2">★</span>
-        <span class="star" data-i="3">★</span>
-        <span class="star" data-i="4">★</span>
-        <span class="star" data-i="5">★</span>
+        <span class="star-wrap" data-i="1"><span class="star-bg">★</span><span class="star-fill" id="star1"></span></span>
+        <span class="star-wrap" data-i="2"><span class="star-bg">★</span><span class="star-fill" id="star2"></span></span>
+        <span class="star-wrap" data-i="3"><span class="star-bg">★</span><span class="star-fill" id="star3"></span></span>
+        <span class="star-wrap" data-i="4"><span class="star-bg">★</span><span class="star-fill" id="star4"></span></span>
+        <span class="star-wrap" data-i="5"><span class="star-bg">★</span><span class="star-fill" id="star5"></span></span>
       </div>
-      <div class="score-label" id="scoreNum" style="display:none"></div>
+      <div class="score-label" id="scoreLabelEl"></div>
+      <div class="score-num-hidden" id="scoreNum" style="display:none"></div>
       <div class="score-elevate" id="scoreElevate"></div>
     </div>
   </div>
@@ -2159,18 +2177,17 @@ ${urlContext ? `Source: ${urlContext}` : ''}
 Confidence: ${selectedConf}
 
 Output rules:
-- origins: MAX 2 sentences. Start "This view has roots in..."
-- steelman: MAX 2 sentences. Start "The case for this is..."
-- assumption: ONE sentence naming the core logical gap. Start "You're assuming that..."
-- counter: MAX 2 sentences. Name a thinker who would push back.
-- reframe: MAX 2 sentences. The defensible upgrade.
+- origins: 3-4 sentences. Start "This view has roots in..."
+- steelman: 3-4 sentences. Start "The case for this is..."
+- assumption: 1-2 sentences. Start "You're assuming that..."
+- counter: 3-4 sentences. Name a thinker who would push back. Make it land.
+- reframe: 2-3 sentences. The defensible upgrade. Match their register.
 - score: integer 28-71
 - score_note: under 15 words
 - sit_with_this: one short question starting with "If" or "What if"
 - steal: their take at its sharpest, max 200 chars, no hashtags, no em-dashes
 - closing_line: under 20 words, dry and witty
-- lenses: exactly 6 items across these categories in this order: (1) deep cut essay, (2) counter essay, (3) unexpected video or documentary, (4) podcast episode, (5) book, (6) interactive tool or game (if a real one exists for this topic, otherwise a second book)
-  Each lens: step, type, anchor (3 words max), title (specific real title), source, format (Essay/Video/Documentary/Podcast/Book/Interactive), tag (2 words), tag_color, why (under 12 words)
+- lenses: 3 to 5 items only. Pick the most relevant from: essay, counter-essay, video/documentary, podcast, book. Skip a category if nothing strong exists. Each lens: step, type, anchor (3 words max), title (specific real title), source, format (Essay/Video/Documentary/Podcast/Book/Interactive), tag (2 words), tag_color (#hex), why (under 12 words)
   No url field. Only suggest real, verifiable titles that exist.
 
 Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
@@ -2188,10 +2205,7 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
   "lenses": [
     {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#1B3F6B","why":""},
     {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#C24B2A","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Podcast","tag":"","tag_color":"#0D9488","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Book","tag":"","tag_color":"#1C1917","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Interactive","tag":"","tag_color":"#B8520A","why":""}
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":""}
   ]
 }`;
 
@@ -2255,24 +2269,26 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     scrollTo(document.getElementById('block6'));
     await new Promise(r => setTimeout(r, 300));
 
-    // Convert 0-100 score to 1-5 stars
-    const starCount = Math.round((p.score / 100) * 5);
-    const stars = document.querySelectorAll('.star');
-    stars.forEach((s, i) => {
+    // Convert 0-100 score to 0.5-5 stars in 0.5 intervals
+    const rawStars = Math.round((p.score / 100) * 10) / 2; // 0.5 steps, max 5
+    const starVal = Math.max(0.5, Math.min(5, rawStars));
+    for(let si = 1; si <= 5; si++){
+      const fill = document.getElementById('star' + si);
+      const wrap = fill ? fill.closest('.star-wrap') : null;
+      if(!fill || !wrap) continue;
+      const pct = Math.min(1, Math.max(0, starVal - (si - 1)));
       setTimeout(() => {
-        s.classList.add('lit');
-        s.classList.add('pop');
-        setTimeout(() => s.classList.remove('pop'), 200);
-      }, i * 180);
-    });
-    // Grey out stars beyond score
+        fill.style.width = (pct * 100) + '%';
+        wrap.classList.add('pop');
+        setTimeout(() => wrap.classList.remove('pop'), 250);
+      }, (si - 1) * 180);
+    }
     setTimeout(() => {
-      stars.forEach((s, i) => {
-        if(i >= starCount) s.classList.remove('lit');
-      });
+      const lbl = document.getElementById('scoreLabelEl');
+      if(lbl) lbl.textContent = starVal + ' / 5';
       document.getElementById('scoreElevate').textContent = p.score_note;
-      document.getElementById('scoreNum').textContent = p.score; // hidden but kept for share modal
-    }, stars.length * 180 + 300);
+      document.getElementById('scoreNum').textContent = p.score;
+    }, 5 * 180 + 300);
 
     // shareTake populated in openShare()
     document.getElementById('shareAssumption').textContent = p.assumption;
@@ -2415,39 +2431,10 @@ function renderLeads(p){
     const card = document.createElement('a');
     card.className = `lens-card theme-${themes[i % 6]}${isInteractive ? ' is-interactive' : ''}`;
     card.style.cssText = `width:${cardWidth}px;min-width:${cardWidth}px;margin-right:16px;`;
-    // Build a direct or fallback URL for the lens
-    const knownDomains = {
-      'The Economist':'economist.com','The Atlantic':'theatlantic.com',
-      'New Yorker':'newyorker.com','The New Yorker':'newyorker.com',
-      'New York Times':'nytimes.com','NYT':'nytimes.com',
-      'The Guardian':'theguardian.com','BBC':'bbc.com',
-      'Financial Times':'ft.com','Bloomberg':'bloomberg.com',
-      'Harvard Business Review':'hbr.org','HBR':'hbr.org',
-      'Wired':'wired.com','TechCrunch':'techcrunch.com',
-      'The Atlantic Monthly':'theatlantic.com',
-      'Substack':'substack.com','Medium':'medium.com',
-      'YouTube':'youtube.com','Netflix':'netflix.com',
-      'Spotify':'open.spotify.com',
-      'Rolling Stone':'rollingstone.com','Pitchfork':'pitchfork.com',
-      'The Ken':'the-ken.com','Scroll':'scroll.in',
-      'The Wire':'thewire.in','Mint':'livemint.com',
-      'Reuters':'reuters.com','AP':'apnews.com',
-      'Washington Post':'washingtonpost.com','The Washington Post':'washingtonpost.com',
-      'Vox':'vox.com','FiveThirtyEight':'fivethirtyeight.com',
-      'Jacobin':'jacobinmag.com','Foreign Affairs':'foreignaffairs.com',
-      'Aeon':'aeon.co','Quillette':'quillette.com',
-      'Nautilus':'nautil.us','Laphams Quarterly':'laphamsquarterly.org',
-    };
-    let cardDomain = null;
-    for(const [name, domain] of Object.entries(knownDomains)){
-      if(lens.source && lens.source.toLowerCase().includes(name.toLowerCase())){
-        cardDomain = domain; break;
-      }
-    }
-    const searchQ = encodeURIComponent('"' + lens.title + '"');
-    card.href = cardDomain
-      ? 'https://' + cardDomain + '/search?q=' + encodeURIComponent(lens.title)
-      : 'https://duckduckgo.com/?q=' + searchQ;
+    // Build best possible URL for the lens
+    // Try Google "I'm Feeling Lucky" style: search title + source, likely lands on article
+    const searchQ = encodeURIComponent(lens.title + ' ' + lens.source);
+    card.href = 'https://www.google.com/search?q=' + searchQ + '&btnI=1';
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
@@ -2547,22 +2534,23 @@ function copySteal(){
 function openShare(){
   const g = id => document.getElementById(id)?.textContent || '';
   const s = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-  // Populate content
+  // Populate content FIRST
   s('shareOrigins',     g('block0Content'));
   s('shareSteelman',    g('block1Content'));
   s('shareCounter',     g('block3Content'));
   s('shareReframe',     g('block5Content'));
   s('shareSitWith',     g('sitPrompt'));
   s('shareClosingLine', g('closingText'));
-  // Populate take echo on every slide
   const takeStr = currentTake ? '"' + currentTake + '"' : '';
   for(let i = 0; i < 7; i++){
     const el = document.getElementById('shareTake' + i);
     if(el) el.textContent = takeStr;
   }
-  // shareAssumption and shareScore already set during run
-  initShareSlides();
+  // Open modal
   document.getElementById('shareModal').classList.add('open');
+  // Init slides THEN render preview (content must be in DOM first)
+  initShareSlides();
+  requestAnimationFrame(() => renderSharePreview());
 }
 function closeShare(){ document.getElementById('shareModal').classList.remove('open') }
 
@@ -2595,8 +2583,14 @@ function resetTool(){
   // resultActions removed from HTML
   const la = document.getElementById('leadsActions');
   if(la) la.classList.remove('streamed');
-  // scoreBar replaced by stars
-  document.getElementById('scoreNum').textContent = '—';
+  // scoreBar removed — replaced by stars
+  document.getElementById('scoreNum').textContent = '';
+  for(let si = 1; si <= 5; si++){
+    const f = document.getElementById('star' + si);
+    if(f) f.style.width = '0%';
+  }
+  const lbl = document.getElementById('scoreLabelEl');
+  if(lbl) lbl.textContent = '';
   document.getElementById('carouselTrack').innerHTML = '';
   document.getElementById('carouselDots').innerHTML = '';
   carouselIndex = 0; carouselTotal = 0;
@@ -2667,9 +2661,7 @@ function initShareSlides(){
   }
   shareSlideIndex = 0;
   shareMode = 'post';
-  // Activate post mode
-  document.getElementById('btnPost').classList.add('selected');
-  document.getElementById('dlPost').classList.add('active');
+  setShareMode('post', true); // noRender=true during init
   updateShareSlides();
 }
 
@@ -2696,7 +2688,7 @@ function shareSlideMove(dir){
 // ── SHARE MODAL STATE ──
 let shareMode = 'post'; // 'post' or 'story'
 
-function setShareMode(mode){
+function setShareMode(mode, noRender){
   shareMode = mode;
   document.getElementById('btnPost').classList.toggle('selected', mode === 'post');
   document.getElementById('btnStory').classList.toggle('selected', mode === 'story');
@@ -2704,7 +2696,7 @@ function setShareMode(mode){
   const dlStory = document.getElementById('dlStory');
   dlPost.classList.toggle('active',  mode === 'post');
   dlStory.classList.toggle('active', mode === 'story');
-  renderSharePreview();
+  if(!noRender) renderSharePreview();
 }
 
 function downloadCurrentCard(format){
@@ -2802,14 +2794,32 @@ function buildShareCanvas(format){
   // Score stars if slide 0
   if(slide === 0){
     y += 50;
-    const starCount = Math.round((parseInt(g('shareScore') || '50') / 100) * 5);
+    const rawS = Math.round((parseInt(g('shareScore')||'50')/100)*10)/2;
+    const starCount = Math.max(0.5,Math.min(5,rawS));
     ctx.font = '400 22px monospace';
     ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.4)' : 'rgba(255,255,255,0.4)';
     ctx.fillText('DEFENSIBILITY', pad, y); y += 44;
     ctx.font = '64px Arial, sans-serif';
     for(let si = 0; si < 5; si++){
-      ctx.fillStyle = si < starCount ? '#E8441A' : (bg === '#F9F9F7' ? 'rgba(10,10,8,0.15)' : 'rgba(255,255,255,0.15)');
-      ctx.fillText('★', pad + si * 74, y);
+      const pct = Math.min(1, Math.max(0, starCount - si));
+      if(pct <= 0){
+        ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.15)' : 'rgba(255,255,255,0.15)';
+        ctx.fillText('★', pad + si * 74, y);
+      } else if(pct >= 1){
+        ctx.fillStyle = '#E8441A';
+        ctx.fillText('★', pad + si * 74, y);
+      } else {
+        // half star: draw grey then clip orange over left half
+        ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.15)' : 'rgba(255,255,255,0.15)';
+        ctx.fillText('★', pad + si * 74, y);
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(pad + si * 74, y - 64, 74 * pct, 70);
+        ctx.clip();
+        ctx.fillStyle = '#E8441A';
+        ctx.fillText('★', pad + si * 74, y);
+        ctx.restore();
+      }
     }
   }
 
