@@ -2187,8 +2187,7 @@ Output rules:
 - sit_with_this: one short question starting with "If" or "What if"
 - steal: their take at its sharpest, max 200 chars, no hashtags, no em-dashes
 - closing_line: under 20 words, dry and witty
-- lenses: 3 to 5 items only. Pick the most relevant from: essay, counter-essay, video/documentary, podcast, book. Skip a category if nothing strong exists. Each lens: step, type, anchor (3 words max), title (specific real title), source, format (Essay/Video/Documentary/Podcast/Book/Interactive), tag (2 words), tag_color (#hex), why (under 12 words)
-  No url field. Only suggest real, verifiable titles that exist.
+- lenses: 3 to 5 items only. Pick the most relevant from: essay, counter-essay, video/documentary, podcast, book. Skip a category if nothing strong exists. Each lens: step, type, anchor (3 words max), title (specific real title), source, format (Essay/Video/Documentary/Podcast/Book/Interactive), tag (2 words), tag_color (#hex), why (under 12 words), url (the real direct URL to this specific article/video/book page — not a search page, not a homepage. For YouTube use youtube.com/watch?v=ID, for books use goodreads.com or publisher page, for articles use the publication URL). Only include items where you are confident the URL is real and correct.
 
 Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 {
@@ -2203,9 +2202,9 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
   "steal": "",
   "closing_line": "",
   "lenses": [
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#1B3F6B","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#C24B2A","why":""},
-    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":""}
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#1B3F6B","why":"","url":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Essay","tag":"","tag_color":"#C24B2A","why":"","url":""},
+    {"step":"","type":"","anchor":"","title":"","source":"","format":"Video","tag":"","tag_color":"#5C3A8C","why":"","url":""}
   ]
 }`;
 
@@ -2431,9 +2430,11 @@ function renderLeads(p){
     const card = document.createElement('a');
     card.className = `lens-card theme-${themes[i % 6]}${isInteractive ? ' is-interactive' : ''}`;
     card.style.cssText = `width:${cardWidth}px;min-width:${cardWidth}px;margin-right:16px;`;
-    // Clean search URL — title in quotes + source name for precision
+    // Use AI-provided URL if available, else quoted Google search fallback
     const searchQ = encodeURIComponent('"' + lens.title + '" ' + lens.source);
-    card.href = 'https://www.google.com/search?q=' + searchQ;
+    card.href = (lens.url && lens.url.startsWith('http'))
+      ? lens.url
+      : 'https://www.google.com/search?q=' + searchQ;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
@@ -2777,8 +2778,8 @@ function buildShareCanvas(format){
     mainText = g(slideIds[slide] || '');
   }
 
-  // Auto font size: start at 44px, shrink to fit
-  let fontSize = 44;
+  // Auto font size: slides 5+6 start larger for impact
+  let fontSize = (slide === 5 || slide === 6) ? 50 : 44;
   const maxH = H - y - (isStory ? 280 : 200);
   while(fontSize > 22){
     ctx.font = 'italic ' + fontSize + 'px Georgia, serif';
@@ -2792,13 +2793,11 @@ function buildShareCanvas(format){
 
   // Score stars if slide 0
   if(slide === 0){
-    y += 50;
+    y += 60;
     const rawS = Math.round((parseInt(g('shareScore')||'50')/100)*10)/2;
     const starCount = Math.max(0.5,Math.min(5,rawS));
-    ctx.font = '400 22px monospace';
-    ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.4)' : 'rgba(255,255,255,0.4)';
-    ctx.fillText('DEFENSIBILITY', pad, y); y += 44;
-    ctx.font = '64px Arial, sans-serif';
+    // Draw stars first
+    ctx.font = '68px Arial, sans-serif';
     for(let si = 0; si < 5; si++){
       const pct = Math.min(1, Math.max(0, starCount - si));
       if(pct <= 0){
@@ -2820,6 +2819,11 @@ function buildShareCanvas(format){
         ctx.restore();
       }
     }
+    // Label below stars
+    y += 80;
+    ctx.font = '400 18px monospace';
+    ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.35)' : 'rgba(255,255,255,0.35)';
+    ctx.fillText('DEFENSIBILITY', pad, y);
   }
 
   // Reframe logo bottom — text fallback since canvas can't load SVG reliably
@@ -2827,9 +2831,6 @@ function buildShareCanvas(format){
   ctx.font = 'italic 400 22px Georgia, serif';
   ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.4)' : 'rgba(255,255,255,0.4)';
   ctx.fillText('Reframe', pad, attrY);
-  ctx.font = '400 14px monospace';
-  ctx.fillStyle = bg === '#F9F9F7' ? 'rgba(10,10,8,0.3)' : 'rgba(255,255,255,0.3)';
-  ctx.fillText('by Axiom', pad + 76, attrY);
 
   return canvas;
 }
