@@ -2431,10 +2431,9 @@ function renderLeads(p){
     const card = document.createElement('a');
     card.className = `lens-card theme-${themes[i % 6]}${isInteractive ? ' is-interactive' : ''}`;
     card.style.cssText = `width:${cardWidth}px;min-width:${cardWidth}px;margin-right:16px;`;
-    // Build best possible URL for the lens
-    // Try Google "I'm Feeling Lucky" style: search title + source, likely lands on article
-    const searchQ = encodeURIComponent(lens.title + ' ' + lens.source);
-    card.href = 'https://www.google.com/search?q=' + searchQ + '&btnI=1';
+    // Clean search URL — title in quotes + source name for precision
+    const searchQ = encodeURIComponent('"' + lens.title + '" ' + lens.source);
+    card.href = 'https://www.google.com/search?q=' + searchQ;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
@@ -2833,6 +2832,27 @@ function buildShareCanvas(format){
   ctx.fillText('by Axiom', pad + 76, attrY);
 
   return canvas;
+}
+
+// Canvas text wrap helpers
+function wrapText(ctx, text, x, y, maxW, lineH){
+  if(!text) return y;
+  const words = text.split(' ');
+  let line = '';
+  for(let n = 0; n < words.length; n++){
+    const test = line + words[n] + ' ';
+    if(ctx.measureText(test).width > maxW && n > 0){
+      ctx.fillText(line.trim(), x, y);
+      line = words[n] + ' ';
+      y += lineH;
+    } else { line = test; }
+  }
+  if(line.trim()) ctx.fillText(line.trim(), x, y);
+  return y + lineH;
+}
+
+function wrapTextReturn(ctx, text, x, y, maxW, lineH){
+  return wrapText(ctx, text, x, y, maxW, lineH);
 }
 
 // Helper: count lines without drawing
