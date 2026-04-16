@@ -1765,16 +1765,16 @@ nav{padding:16px var(--px)}
   </div>
 
   <!-- Block 4: Your take sharpened — full dark background -->
-  <div class="result-block reframe" id="block5">
+  <div class="result-block reframe" id="block4">
     <div class="block-header">
       <span class="block-num" style="color:rgba(255,255,255,0.25)">05</span>
       <span class="block-title" style="color:rgba(255,255,255,0.5)">Your take, sharpened</span>
     </div>
-    <div class="block-content" id="block5Content"></div>
+    <div class="block-content" id="block4Content"></div>
   </div>
 
   <!-- Score block -->
-  <div class="result-block score-block" id="block6">
+  <div class="result-block score-block" id="block5">
     <div class="block-header">
       <span class="block-num">06</span>
       <span class="block-title">Defensibility score</span>
@@ -1950,18 +1950,30 @@ function scrollTo(el){
 }
 
 // ── THINKING ANIMATION ──
+// Store thinking animation timer IDs so we can cancel them
+window._thinkTimers = [];
+
 function runThinkingAnimation(){
+  // Cancel any previously running timers
+  window._thinkTimers.forEach(id => clearTimeout(id));
+  window._thinkTimers = [];
   const lines = document.querySelectorAll('.think-line');
   lines.forEach(l => { l.classList.remove('visible','active'); });
 
   lines.forEach((line, i) => {
     const delay = parseInt(line.dataset.delay) || 0;
-    setTimeout(() => {
-      // deactivate previous
+    const tid = setTimeout(() => {
       if(i > 0) lines[i-1].classList.remove('active');
       line.classList.add('visible','active');
     }, delay);
+    window._thinkTimers.push(tid);
   });
+}
+
+function cancelThinkingAnimation(){
+  window._thinkTimers.forEach(id => clearTimeout(id));
+  window._thinkTimers = [];
+  document.querySelectorAll('.think-line').forEach(l => l.classList.remove('visible','active'));
 }
 
 // ── STREAM BLOCK ──
@@ -2026,9 +2038,32 @@ function languageCheck(text){
 
 // ── NODE 3: Harmful keyword check (JS, zero API cost) ──
 function harmfulCheck(text){
-  const t = text.toLowerCase();
-  const blocked = ['hitler was right','hitler was correct','nazis were right','genocide is good','kill all','rape is fine'];
-  return blocked.some(phrase => t.includes(phrase));
+  // Normalize: lowercase, collapse spaces, strip common leet/punctuation substitutions
+  const norm = text.toLowerCase()
+    .replace(/[^a-z0-9 ]/g,' ')   // strip punctuation
+    .replace(/\s+/g,' ')           // collapse whitespace
+    .replace(/0/g,'o')         // leet: 0→o
+    .replace(/1/g,'i')         // leet: 1→i
+    .replace(/3/g,'e')         // leet: 3→e
+    .trim();
+
+  const blocked = [
+    // Holocaust / genocide
+    'hitler was right','hitler is right','nazis were right','nazi ideology is correct',
+    'holocaust was good','holocaust was justified','genocide is good','genocide is justified',
+    'ethnic cleansing is',
+    // Sexual violence
+    'rape is fine','rape is okay','rape is good','rape is justified','rape is natural',
+    'sexual assault is fine','sexual assault is okay',
+    // Mass violence  
+    'kill all','kill every','kill the',
+    'death to all','death to every',
+    // Terrorism / extremism
+    'terrorism is justified','terrorism is good',
+    '9 11 was good','9 11 was deserved',
+  ];
+
+  return blocked.some(phrase => norm.includes(phrase));
 }
 
 // ── INLINE NOTICE helper ──
@@ -2040,7 +2075,21 @@ function showNotice(html, type='neutral'){
 }
 
 // ── MAIN RUN — the full classification tree ──
+
+// Sanitize AI-derived strings before inserting into DOM
+function sanitize(str){
+  if(!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#x27;');
+}
+
 async function runStressTest(){
+  if(window._reframeRunning) return;
+  window._reframeRunning = true;
   clearNotice();
   const take = document.getElementById('takeInput').value.trim();
 
@@ -2130,6 +2179,7 @@ ${src && !src.match(/https?:\/\//i) ? `What triggered this: "${src}"` : ''}` }]
         })
       });
       const cultData = await cultRes.json();
+      window._reframeRunning = false;
       document.getElementById('thinkingState').classList.remove('active');
       document.getElementById('inputSection').style.display = 'block';
       document.getElementById('submitBtn').disabled = false;
@@ -2147,6 +2197,7 @@ ${src && !src.match(/https?:\/\//i) ? `What triggered this: "${src}"` : ''}` }]
         })
       });
       const qData = await qRes.json();
+      window._reframeRunning = false;
       document.getElementById('thinkingState').classList.remove('active');
       document.getElementById('inputSection').style.display = 'block';
       document.getElementById('submitBtn').disabled = false;
@@ -2182,7 +2233,7 @@ Output rules:
 - assumption: 1-2 sentences. Start "You're assuming that..."
 - counter: 3-4 sentences. Name a thinker who would push back. Make it land.
 - reframe: 2-3 sentences. The defensible upgrade. Match their register.
-- score: integer 28-71
+- score: integer 15-90
 - score_note: under 15 words
 - sit_with_this: one short question starting with "If" or "What if"
 - steal: their take at its sharpest, max 200 chars, no hashtags, no em-dashes
@@ -2223,7 +2274,17 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
       showRefusal(); return;
     }
 
-    const p = JSON.parse(raw);
+    let p;
+    try {
+      p = JSON.parse(raw);
+    } catch(parseErr) {
+      document.getElementById('thinkingState').classList.remove('active');
+      document.getElementById('inputSection').style.display = 'block';
+      document.getElementById('submitBtn').disabled = false;
+      window._reframeRunning = false;
+      showNotice('<div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Response error</div><div style="font-size:14px;font-family:var(--serif);font-style:italic;color:var(--ink);line-height:1.6">The response was incomplete. Your take is still there — try again.</div>', 'neutral');
+      return;
+    }
     currentScore = p.score;
     currentAssumption = p.assumption;
 
@@ -2258,14 +2319,14 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
     await streamBlock(document.getElementById('block3Content'), p.counter, 600);
 
     // Block 4 — Your take sharpened
-    await streamBlock(document.getElementById('block5Content'), p.reframe, 500);
+    await streamBlock(document.getElementById('block4Content'), p.reframe, 500);
 
     // Score
     await new Promise(r => setTimeout(r, 800));
-    const _b6 = document.getElementById('block6');
+    const _b6 = document.getElementById('block4');
     _b6.style.opacity = ''; _b6.style.transform = ''; void _b6.offsetWidth;
     _b6.classList.add('streamed');
-    scrollTo(document.getElementById('block6'));
+    scrollTo(document.getElementById('block4'));
     await new Promise(r => setTimeout(r, 300));
 
     // Convert 0-100 score to 0.5-5 stars in 0.5 intervals
@@ -2298,9 +2359,12 @@ Respond ONLY with valid JSON — no markdown, no preamble, no explanation:
 
     // Render carousel + closing line
     await new Promise(r => setTimeout(r, 1000));
+    window._reframeRunning = false;
     renderLeads(p);
 
   } catch(e){
+    window._reframeRunning = false;
+    cancelThinkingAnimation();
     document.getElementById('thinkingState').classList.remove('active');
     document.getElementById('inputSection').style.display = 'block';
     document.getElementById('submitBtn').disabled = false;
@@ -2443,7 +2507,7 @@ function renderLeads(p){
     const initials = getInitials(lens.source);
 
     const logoHtml = faviconUrl
-      ? `<img src="${faviconUrl}" alt="${lens.source}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      ? `<img src="${sanitize(faviconUrl)}" alt="${sanitize(lens.source)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
         + `<span class="lens-source-logo-fallback" style="display:none">${initials}</span>`
       : `<span class="lens-source-logo-fallback">${initials}</span>`;
 
@@ -2460,17 +2524,17 @@ function renderLeads(p){
         <div class="lens-thumb-overlay"></div>
         ${thumbExtra}
         <div class="lens-source-logo">${logoHtml}</div>
-        <span class="lens-format-badge">${lens.format}</span>
-        <span class="lens-step-label">${lens.step}</span>
+        <span class="lens-format-badge">${sanitize(lens.format)}</span>
+        <span class="lens-step-label">${sanitize(lens.step)}</span>
         <span class="lens-arrow-icon">↗</span>
       </div>
       <div class="lens-body">
-        <span class="lens-type-label">${lens.type}</span>
-        <span class="lens-anchor">${lens.anchor}</span>
-        <div class="lens-title">${lens.title}</div>
-        <div class="lens-source-line">${lens.source}</div>
-        <div class="lens-why">${lens.why}</div>
-        <span class="lens-tag-pill">${lens.tag}</span>
+        <span class="lens-type-label">${sanitize(lens.type)}</span>
+        <span class="lens-anchor">${sanitize(lens.anchor)}</span>
+        <div class="lens-title">${sanitize(lens.title)}</div>
+        <div class="lens-source-line">${sanitize(lens.source)}</div>
+        <div class="lens-why">${sanitize(lens.why)}</div>
+        <span class="lens-tag-pill">${sanitize(lens.tag)}</span>
       </div>`;
 
     track.appendChild(card);
@@ -2538,7 +2602,7 @@ function openShare(){
   s('shareOrigins',     g('block0Content'));
   s('shareSteelman',    g('block1Content'));
   s('shareCounter',     g('block3Content'));
-  s('shareReframe',     g('block5Content'));
+  s('shareReframe',     g('block4Content'));
   s('shareSitWith',     g('sitPrompt'));
   s('shareClosingLine', g('closingText'));
   const takeStr = currentTake ? '"' + currentTake + '"' : '';
@@ -2565,18 +2629,36 @@ function copyShareText(){
 
 // ── RESET ──
 function resetTool(){
+  // Clear all module-level state
+  currentTake = '';
+  currentScore = 0;
+  currentAssumption = '';
+  selectedConf = 'Fairly sure';
+  window._reframeRunning = false;
   document.getElementById('resultsSection').classList.remove('active');
   document.getElementById('leadsSection').classList.remove('active');
   document.getElementById('inputSection').style.display = 'block';
   document.getElementById('submitBtn').disabled = false;
   document.getElementById('takeInput').value = '';
   document.getElementById('charCount').textContent = '0 / 1200';
+  // Clear optional fields
+  const ctxEl = document.getElementById('contextInput');
+  const srcEl = document.getElementById('sourceInput');
+  if(ctxEl) ctxEl.value = '';
+  if(srcEl) srcEl.value = '';
+  // Close optional fields if open
+  const optFields = document.getElementById('optionalFields');
+  const chevron = document.getElementById('toggleChevron');
+  if(optFields && optFields.classList.contains('open')){
+    optFields.classList.remove('open');
+    if(chevron) chevron.classList.remove('open');
+  }
   document.querySelectorAll('.result-block').forEach(b => {
     b.classList.remove('streamed');
     b.style.opacity = '0';
     b.style.transform = 'translateY(16px)';
   });
-  ['block0Content','block1Content','block2Statement','block3Content','block5Content'].forEach(id => {
+  ['block0Content','block1Content','block2Statement','block3Content','block4Content'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.textContent = '';
   });
